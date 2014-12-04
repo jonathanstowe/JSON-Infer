@@ -29,7 +29,7 @@ the return of a REST Call.
 
 =item infer
 
-This accepts a single path and returns a L<JSON::Infer::Moose::Content>
+This accepts a single path and returns a L<JSON::Infer::Moose::Class>
 object, if there is an error retrieving the data or parsing the response
 it will throw an exception.
 
@@ -42,7 +42,13 @@ It requires the following named arguments:
 This is the uri that will be used to retrieve the content.  It will need
 to be some protocol scheme that is understood by L<LWP::UserAgent>
 
+=item class_name
+
+This is the base class name that will be used for the package, any child classes that are discovered will parsing the
+attributes will have a name based on this and the name of the attribute.
+
 =cut
+
 
 =back
 
@@ -65,7 +71,13 @@ sub infer
 
          if ($resp->is_success() )
          {
+            require JSON::Infer::Moose::Class;
+
+            my $name = $args{class_name} || 'My::JSON';
+
             my $content = $self->decode_json($resp->decoded_content());
+
+            $ret = JSON::Infer::Moose::Class->new_from_data($name, $content);
          }
          else
          {
@@ -100,8 +112,8 @@ sub _get_ua
    require LWP::UserAgent;
 
    my $ua = LWP::UserAgent->new(
-      default_headers   => $self->headers(); 
-      agent => __PACKAGE__ . '/' . $version;
+      default_headers   => $self->headers(), 
+      agent => __PACKAGE__ . '/' . $VERSION,
    );
 
 

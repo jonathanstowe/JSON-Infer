@@ -1,12 +1,15 @@
-# -*- perl -*-
 
-# t/001_load.t - check module loading and create testing directory
+use Test::More;
 
-use Test::More tests => 2;
-
-BEGIN { use_ok( 'JSON::Infer::Moose' ); }
+use_ok( 'JSON::Infer::Moose' );
 
 my $object = JSON::Infer::Moose->new ();
 isa_ok ($object, 'JSON::Infer::Moose');
 
+use_ok('JSON::Infer::Moose::Class');
 
+use_ok('JSON::Infer::Moose::Attribute');
+
+use_ok('JSON::Infer::Moose::Role::Classes');
+
+done_testing();
