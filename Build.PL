@@ -9,7 +9,7 @@ my @args = (
              create_makefile_pl  => 'traditional',
              script_files  => 'bin',
              meta_merge         => {
-                                      resources => { repository => 'https://github.com/jonathanstowe/UML-Model' }
+                                      resources => { repository => 'https://github.com/jonathanstowe/JSON-Infer-Moose' }
                                 },
              requires      => {
                 'Moose'            => undef,
