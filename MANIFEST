@@ -1,9 +1,14 @@
-MANIFEST
-README
-LICENSE
-Todo
-Changes
 Build.PL
-Makefile.PL
+Changes
 lib/JSON/Infer/Moose.pm
+lib/JSON/Infer/Moose/Attribute.pm
+lib/JSON/Infer/Moose/Class.pm
+lib/JSON/Infer/Moose/Exception.pm
+lib/JSON/Infer/Moose/Role/Classes.pm
+LICENSE
+Makefile.PL
+MANIFEST			This list of files
+README
 t/001_load.t
+t/002_attribute.t
+t/003_class.t
