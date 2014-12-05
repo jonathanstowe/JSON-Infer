@@ -27,7 +27,7 @@ has classes => (
                   auto_deref  => 1,
                   default  => sub { [] },
                   handles  => {
-                     all   => 'elements',
+                     all_classes   => 'elements',
                      _add_class  => 'push',
                   },
                );

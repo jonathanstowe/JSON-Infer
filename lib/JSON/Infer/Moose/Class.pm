@@ -8,6 +8,7 @@ our ($VERSION) = q$Revision:$ =~ /Revision:\s*(\d+)/;
 use Moose;
 with qw(
          JSON::Infer::Moose::Role::Classes
+         JSON::Infer::Moose::Role::Types
        );
 
 use Scalar::Util qw(reftype);
@@ -144,6 +145,7 @@ sub add_attribute
    {
       $self->_add_attribute($attr->name(), $attr);
       $self->add_classes($attr);
+      $self->add_types($attr);
    }
 }
 

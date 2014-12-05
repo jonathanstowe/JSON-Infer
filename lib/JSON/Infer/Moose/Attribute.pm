@@ -6,6 +6,7 @@ use warnings;
 use Moose;
 with qw(
          JSON::Infer::Moose::Role::Classes
+         JSON::Infer::Moose::Role::Types
        );
 
 use Scalar::Util qw(reftype looks_like_number);
@@ -122,6 +123,7 @@ sub process_object
    my $obj = JSON::Infer::Moose::Class->new_from_data($self->child_class_name(), $value);
 
    $self->add_classes($obj);
+   $self->add_types($obj);
    return $obj;
 }
 
