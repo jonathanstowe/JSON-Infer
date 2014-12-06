@@ -10,7 +10,7 @@ with qw(
        );
 
 use Scalar::Util qw(reftype looks_like_number);
-use List::Util qw(any);
+use List::MoreUtils qw(any);
 
 =head1 NAME
 

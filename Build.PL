@@ -12,9 +12,10 @@ my @args = (
                                       resources => { repository => 'https://github.com/jonathanstowe/JSON-Infer-Moose' }
                                 },
              requires      => {
-                'Moose'            => undef,
-                'JSON'             => undef,
-                'LWP::UserAgent'   => undef,
+                'Moose'             => undef,
+                'JSON'              => undef,
+                'LWP::UserAgent'    => undef,
+                'List::MoreUtils'   => '0.33',
              },
            );
 
