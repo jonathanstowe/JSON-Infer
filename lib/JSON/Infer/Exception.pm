@@ -1,10 +1,7 @@
-package JSON::Infer::Exception;
+use v6;
 
-use strict;
-use warnings;
 
-use Moose;
-with qw(Throwable);
+=begin pod
 
 =head1 NAME
 
@@ -16,10 +13,10 @@ Generalised exception class
 
 =head2 METHODS
 
-=over 4
 
-=back
+=end pod
 
-=cut
-
-1;
+class JSON::Infer::Exception does Exception {
+   has $.message is rw;
+}
+# vim: expandtab shiftwidth=4 ft=perl6
