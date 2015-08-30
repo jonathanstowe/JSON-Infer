@@ -1,10 +1,7 @@
-package JSON::Infer::Role::Types;
 
-use strict;
-use warnings;
+use v6;
 
-
-use Moose::Role;
+=begin pod
 
 =head1 NAME
 
@@ -14,51 +11,32 @@ JSON::Infer::Role::Types
 
 =head2 METHODS
 
-=over 4
 
-=item types
+=head3 types
 
-=cut
-
-has types => (
-                  is => 'rw',
-                  isa   => 'ArrayRef[JSON::Infer::Types]',
-                  traits   => [qw(Array)],
-                  auto_deref  => 1,
-                  default  => sub { [] },
-                  handles  => {
-                     all_types   => 'elements',
-                     _add_type  => 'push',
-                  },
-               );
-
-=item add_types
+=head3 add-types
 
 This takes and object of this role and adds it's types to my types.
 
-=cut
+=end pod
 
-sub  add_types
-{
-   my ( $self, $object ) = @_;
+role JSON::Infer::Role::Types {
 
-   if ( $object->DOES('JSON::Infer::Role::Types') )
-   {
-      foreach my $type ( $object->types() )
-      {
-         $self->_add_type($type);
+   need JSON::Infer::Types;
+
+   has JSON::Infer::Types @.types is rw;
+
+
+   method  add-types(Mu:D $object ) {
+
+      if $object.does($?ROLE) {
+         for $object.types -> $type {
+            $!types.push($type);
+         }
+      }
+      if $object.isa(JSON::Infer::Type) {
+         $!types.push($type);
       }
    }
-
-   if ( $object->isa('JSON::Infer::Type') )
-   {
-      $self->_add_type($object);
-   }
 }
-
-
-=back
-
-=cut
-
-1;
+# vim: expandtab shiftwidth=4 ft=perl6
