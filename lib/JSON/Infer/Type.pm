@@ -1,16 +1,16 @@
-package JSON::Infer::Moose::Type;
+package JSON::Infer::Type;
 
 use strict;
 use warnings;
 
 use Moose;
 with qw(
-         JSON::Infer::Moose::Role::Entity
+         JSON::Infer::Role::Entity
        );
 
 =head1 NAME
 
-JSON::Infer::Moose::Type
+JSON::Infer::Type
 
 =head1 DESCRIPTION
 
@@ -55,13 +55,13 @@ has array   => (
 
 =item of_class
 
-This is the L<JSON::Infer::Moose::Class> that this type is for.
+This is the L<JSON::Infer::Class> that this type is for.
 
 =cut
 
 has of_class   => (
                      is => 'rw',
-                     isa   => 'JSON::Infer::Moose::Class',
+                     isa   => 'JSON::Infer::Class',
                   );
 
 =back

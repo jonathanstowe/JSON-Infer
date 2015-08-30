@@ -1,4 +1,4 @@
-package JSON::Infer::Moose::Role::Classes;
+package JSON::Infer::Role::Classes;
 
 use strict;
 use warnings;
@@ -8,7 +8,7 @@ use Moose::Role;
 
 =head1 NAME
 
-JSON::Infer::Moose::Role::Classes
+JSON::Infer::Role::Classes
 
 =head1 DESCRIPTION
 
@@ -22,7 +22,7 @@ JSON::Infer::Moose::Role::Classes
 
 has classes => (
                   is => 'rw',
-                  isa   => 'ArrayRef[JSON::Infer::Moose::Class]',
+                  isa   => 'ArrayRef[JSON::Infer::Class]',
                   traits   => [qw(Array)],
                   auto_deref  => 1,
                   default  => sub { [] },
@@ -42,7 +42,7 @@ sub  add_classes
 {
    my ( $self, $object ) = @_;
 
-   if ( $object->DOES('JSON::Infer::Moose::Role::Classes') )
+   if ( $object->DOES('JSON::Infer::Role::Classes') )
    {
       foreach my $class ( $object->classes() )
       {
@@ -50,7 +50,7 @@ sub  add_classes
       }
    }
 
-   if ( $object->isa('JSON::Infer::Moose::Class') )
+   if ( $object->isa('JSON::Infer::Class') )
    {
       $self->_add_class($object);
    }

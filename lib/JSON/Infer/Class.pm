@@ -1,4 +1,4 @@
-package JSON::Infer::Moose::Class;
+package JSON::Infer::Class;
 
 use strict;
 use warnings;
@@ -7,8 +7,8 @@ our ($VERSION) = q$Revision:$ =~ /Revision:\s*(\d+)/;
 
 use Moose;
 with qw(
-         JSON::Infer::Moose::Role::Classes
-         JSON::Infer::Moose::Role::Types
+         JSON::Infer::Role::Classes
+         JSON::Infer::Role::Types
        );
 
 use Scalar::Util qw(reftype);
@@ -17,7 +17,7 @@ use Scalar::Util qw(reftype);
 
 =head1 NAME
 
-JSON::Infer::Moose::Class
+JSON::Infer::Class
 
 =head1 DESCRIPTION
 
@@ -30,7 +30,7 @@ JSON input.
 
 =item new_from_data
 
-This returns a L<JSON::Infer::Moose::Class> constructed from the provided
+This returns a L<JSON::Infer::Class> constructed from the provided
 reference.
 
 =cut
@@ -92,8 +92,8 @@ sub new_attribute
 {
    my ( $self, $name, $value ) = @_;
 
-   require JSON::Infer::Moose::Attribute;
-   my $new = JSON::Infer::Moose::Attribute->new_from_value($name, $value, $self->name());
+   require JSON::Infer::Attribute;
+   my $new = JSON::Infer::Attribute->new_from_value($name, $value, $self->name());
    $self->add_attribute($new);
 
    return $new;
@@ -120,7 +120,7 @@ This is an array ref of the attributes discovered i the object.
 
 has _attributes  => (
                      is => 'rw',
-                     isa   => 'HashRef[JSON::Infer::Moose::Attribute]',
+                     isa   => 'HashRef[JSON::Infer::Attribute]',
                      default  => sub { {} },
                      traits   => [qw(Hash)],
                      handles  => {

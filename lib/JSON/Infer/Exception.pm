@@ -1,4 +1,4 @@
-package JSON::Infer::Moose::Exception;
+package JSON::Infer::Exception;
 
 use strict;
 use warnings;
@@ -8,7 +8,7 @@ with qw(Throwable);
 
 =head1 NAME
 
-JSON::Infer::Moose::Exception
+JSON::Infer::Exception
 
 =head1 DESCRIPTION
 

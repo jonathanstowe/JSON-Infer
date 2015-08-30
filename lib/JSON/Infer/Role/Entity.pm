@@ -1,4 +1,4 @@
-package JSON::Infer::Moose::Role::Entity;
+package JSON::Infer::Role::Entity;
 
 use strict;
 use warnings;
@@ -8,7 +8,7 @@ use Moose::Role;
 
 =head1 NAME
 
-JSON::Infer::Moose::Role::Entity
+JSON::Infer::Role::Entity
 
 =head1 DESCRIPTION
 

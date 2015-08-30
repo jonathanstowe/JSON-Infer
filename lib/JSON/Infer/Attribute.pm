@@ -1,12 +1,12 @@
-package JSON::Infer::Moose::Attribute;
+package JSON::Infer::Attribute;
 
 use strict;
 use warnings;
 
 use Moose;
 with qw(
-         JSON::Infer::Moose::Role::Classes
-         JSON::Infer::Moose::Role::Types
+         JSON::Infer::Role::Classes
+         JSON::Infer::Role::Types
        );
 
 use Scalar::Util qw(reftype looks_like_number);
@@ -14,7 +14,7 @@ use List::MoreUtils qw(any);
 
 =head1 NAME
 
-JSON::Infer::Moose::Attribute
+JSON::Infer::Attribute
 
 =head1 DESCRIPTION
 
@@ -110,7 +110,7 @@ sub infer_from_value
 =item process_object
 
 This is used to process an object value returning the
-JSON::Infer::Moose::Class object.
+JSON::Infer::Class object.
 
 =cut
 
@@ -118,9 +118,9 @@ sub process_object
 {
    my ( $self, $value ) = @_;
 
-   require JSON::Infer::Moose::Class;
+   require JSON::Infer::Class;
 
-   my $obj = JSON::Infer::Moose::Class->new_from_data($self->child_class_name(), $value);
+   my $obj = JSON::Infer::Class->new_from_data($self->child_class_name(), $value);
 
    $self->add_classes($obj);
    $self->add_types($obj);
