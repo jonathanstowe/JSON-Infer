@@ -1,10 +1,7 @@
-package JSON::Infer::Role::Classes;
 
-use strict;
-use warnings;
+use v6;
 
-
-use Moose::Role;
+=begin pod
 
 =head1 NAME
 
@@ -14,51 +11,33 @@ JSON::Infer::Role::Classes
 
 =head2 METHODS
 
-=over 4
 
-=item classes
+=head3 classes
 
-=cut
-
-has classes => (
-                  is => 'rw',
-                  isa   => 'ArrayRef[JSON::Infer::Class]',
-                  traits   => [qw(Array)],
-                  auto_deref  => 1,
-                  default  => sub { [] },
-                  handles  => {
-                     all_classes   => 'elements',
-                     _add_class  => 'push',
-                  },
-               );
-
-=item add_classes
+=head3 add_classes
 
 This takes and object of this role and adds it's classes to my classes.
 
-=cut
+=end pod
 
-sub  add_classes
-{
-   my ( $self, $object ) = @_;
+role JSON::Infer::Role::Classes {
 
-   if ( $object->DOES('JSON::Infer::Role::Classes') )
-   {
-      foreach my $class ( $object->classes() )
-      {
-         $self->_add_class($class);
-      }
-   }
+    need JSON::Infer::Class;
 
-   if ( $object->isa('JSON::Infer::Class') )
-   {
-      $self->_add_class($object);
-   }
+    has JSON::Infer::Class @.classes is rw;
+
+    method  add-classes(Mu:D $object) {
+
+        if $object.does($?ROLE) {
+            for $object.classes --> $class {
+                $!classes.push($class);
+            }
+        }
+
+        if  $object.isa(JSON::Infer::Class) {
+            $!classes.push($object);
+        }
+    }
+
 }
-
-
-=back
-
-=cut
-
-1;
+# vim: expandtab shiftwidth=4 ft=perl6
