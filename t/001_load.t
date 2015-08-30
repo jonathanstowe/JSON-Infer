@@ -1,18 +1,22 @@
 
-use Test::More;
+use v6;
+use lib 'lib';
 
-use_ok( 'JSON::Infer::Moose' );
+use Test;
 
-my $object = JSON::Infer::Moose->new ();
-isa_ok ($object, 'JSON::Infer::Moose');
+use-ok( 'JSON::Infer' );
 
-use_ok('JSON::Infer::Moose::Class');
+my $object = JSON::Infer.new();
+isa_ok ($object, 'JSON::Infer');
 
-use_ok('JSON::Infer::Moose::Attribute');
+use-ok('JSON::Infer::Class');
 
-use_ok('JSON::Infer::Moose::Type');
+use-ok('JSON::Infer::Attribute');
 
-use_ok('JSON::Infer::Moose::Role::Classes');
-use_ok('JSON::Infer::Moose::Role::Types');
+use-ok('JSON::Infer::Type');
 
-done_testing();
+use-ok('JSON::Infer::Role::Classes');
+use-ok('JSON::Infer::Role::Types');
+
+done-testing();
+# vim: expandtab shiftwidth=4 ft=perl6
