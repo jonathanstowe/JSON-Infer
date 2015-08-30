@@ -1,10 +1,7 @@
-package JSON::Infer::Role::Entity;
 
-use strict;
-use warnings;
+use v6;
 
-use Moose::Role;
-
+=begin pod
 
 =head1 NAME
 
@@ -16,22 +13,14 @@ Role for common items between classes (name etc.)
 
 =head2 METHODS
 
-=over 4
 
-=item name
+=head3 name
 
-=cut
+=end pod
 
-has name => (
-               is => 'rw',
-               isa   => 'Str',
-            );
+role JSON::Infer::Role::Entity {
 
+   has Str $.name is rw;
 
-=back
-
-
-
-=cut
-
-1;
+}
+# vim: expandtab shiftwidth=4 ft=perl6
