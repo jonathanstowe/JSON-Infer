@@ -1,20 +1,18 @@
-package JSON::Infer::Moose;
+use v6;
 
-use strict;
-use warnings;
-
-our $VERSION = '0.1';
-
-use Moose;
-
+=begin pod
 
 =head1 NAME
 
-JSON::Infer::Moose - Infer Moose Classes from JSON objects
+JSON::Infer - Infer Moose Classes from JSON objects
 
 =head1 SYNOPSIS
 
-  use JSON::Infer::Moose;
+=begin code
+
+  use JSON::Infer;
+
+=end code
 
 
 =head1 DESCRIPTION
@@ -27,9 +25,9 @@ the return of a REST Call.
 =over 4
 
 
-=item infer
+=head3 infer
 
-This accepts a single path and returns a L<JSON::Infer::Moose::Class>
+This accepts a single path and returns a L<JSON::Infer::Class>
 object, if there is an error retrieving the data or parsing the response
 it will throw an exception.
 
@@ -37,189 +35,93 @@ It requires the following named arguments:
 
 =over 4
 
-=item uri
+=head3 uri
 
 This is the uri that will be used to retrieve the content.  It will need
 to be some protocol scheme that is understood by L<LWP::UserAgent>
 
-=item class_name
+=head3 class_name
 
 This is the base class name that will be used for the package, any child classes that are discovered will parsing the
 attributes will have a name based on this and the name of the attribute.
 
-=cut
-
-
-=back
-
-
-=cut
-
-sub infer
-{
-   my ( $self, @args ) = @_;
-
-   my $ret;
-
-   if ( @args  )
-   {
-      my %args = @args;
-
-      if ( defined(my $uri = $args{uri} ) )
-      {
-         my $resp =  $self->get($uri);
-
-         if ($resp->is_success() )
-         {
-            require JSON::Infer::Moose::Class;
-
-            my $name = $args{class_name} || 'My::JSON';
-
-            my $content = $self->decode_json($resp->decoded_content());
-
-            $ret = JSON::Infer::Moose::Class->new_from_data($name, $content);
-         }
-         else
-         {
-         }
-      }
-      else
-      {
-      }
-
-   }
-
-   return $ret;
-}
-
-=item ua
+=head3 ua
 
 The L<LWP::UserAgent> that will be used. 
 
-=cut
-
-has ua   => (
-               is => 'rw',
-               isa   => 'LWP::UserAgent',
-               lazy  => 1,
-               builder  => '_get_ua',
-               handles  => [qw(get)],
-            );
-
-sub _get_ua
-{
-   my ( $self ) = @_;
-   require LWP::UserAgent;
-
-   my $ua = LWP::UserAgent->new(
-      default_headers   => $self->headers(), 
-      agent => __PACKAGE__ . '/' . $VERSION,
-   );
-
-
-
-
-   return $ua;
-}
-
-=item headers
+=head3 headers
 
 Returns the default set of headers that will be applied to the
 LWP::UserAgent object.
 
-=cut
-
-has headers => (
-                  is => 'rw',
-                  isa   => 'HTTP::Headers',
-                  lazy  => 1,
-                  builder  => '_get_headers',
-               );
-
-sub _get_headers
-{
-   my ( $self ) = @_;
-
-   require HTTP::Headers;
-
-   my $h = HTTP::Headers->new();
-   $h->header('Content-Type'  => $self->content_type());
-   $h->header('Accept'  => $self->content_type());
-
-   return $h;
-}
-
-=item content_type
+=head3 content_type
 
 This is the content type that we want to use.  The default is
 "application/json".
 
-=cut
-
-has content_type  => (
-                        is => 'rw',
-                        isa   => 'Str',
-                        default  => "application/json",
-                     );
-
-
-=item json_parser
+=head3 json_parser
 
 This returns a JSON parser object.
 
-=cut
+=end pod
 
-has json_parser   => (
-                        is => 'rw',
-                        isa   => 'JSON',
-                        lazy  => 1,
-                        builder  => '_get_json',
-                        handles  => {
-                           decode_json => 'decode',
-                           encode_json => 'encode',
-                        },
-                     );
+class JSON::Infer:ver<v0.0.1> {
 
-sub _get_json
-{
-   my ( $self ) = @_;
+    our $VERSION = v0.0.1;
 
-   require JSON;
+    use HTTP::UserAgent;
 
-   my $json = JSON->new();
+    method infer(:$uri, Str :$class-name = 'My::JSON')
+    {
+        my $ret;
 
-   return $json;
+
+        if $uri.defined {
+            my $resp =  self.get($uri);
+
+            if $resp.is-success() {
+                require JSON::Infer::Class;
+
+                my $content = self.decode-json($resp.decoded-content());
+
+                $ret = JSON::Infer::Class.new_from_data(:$class-name, :$content);
+            }
+            else {
+            }
+        }
+        else {
+        }
+
+        return $ret;
+    }
+
+
+    has HTTP::UserAgent $.ua is rw handles <get>;
+
+    method !get-ua {
+        require HTTP::UserAgent;
+        my $ua = HTTP::UserAgent.new( default-headers   => $.headers, agent => $?PACKAGE ~ '/' ~ $VERSION);
+        $ua;
+    }
+
+
+    has HTTP::Header $.headers is rw;
+
+    method !get-headers() {
+        require HTTP::Header;
+        my $h = HTTP::Header.new();
+        $h.header('Content-Type'  => $!content-type);
+        $h.header('Accept'  => $!content-type);
+        $h;
+    }
+
+
+    has $.content-type  is rw =  "application/json";
+
+    method decode-json(Str $content) {
+        use JSON::Fast;
+        from-json($content);
+    }
+
 }
-
-
-=back
-
-
-=head1 BUGS
-
-
-
-=head1 SUPPORT
-
-
-
-=head1 AUTHOR
-
-    Jonathan Stowe <jns@gellyfish.co.uk>
-
-=head1 COPYRIGHT
-
-This program is free software; you can redistribute
-it and/or modify it under the same terms as Perl itself.
-
-The full text of the license can be found in the
-LICENSE file included with this module.
-
-
-=head1 SEE ALSO
-
-perl(1).
-
-=cut
-
-1;
+# vim: expandtab shiftwidth=4 ft=perl6
