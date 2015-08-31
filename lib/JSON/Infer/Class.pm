@@ -89,7 +89,7 @@ class JSON::Infer::Class does JSON::Infer::Role::Classes does JSON::Infer::Role:
 
     has Str $.name is rw;
 
-    has JSON::Infer::Attribute %attributes;
+    has JSON::Infer::Attribute %.attributes is rw;
 
     method add-attribute(JSON::Infer::Attribute $attr) {
         %!attributes{$attr.name} = $attr;
