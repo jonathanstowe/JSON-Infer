@@ -22,20 +22,19 @@ This takes and object of this role and adds it's classes to my classes.
 
 role JSON::Infer::Role::Classes {
 
-    need JSON::Infer::Class;
 
-    has JSON::Infer::Class @.classes is rw;
+    has ::('JSON::Infer::Class') @.classes is rw;
 
     method  add-classes(Mu:D $object) {
 
         if $object.does($?ROLE) {
-            for $object.classes --> $class {
-                $!classes.push($class);
+            for $object.classes -> $class {
+                @!classes.push($class);
             }
         }
 
-        if  $object.isa(JSON::Infer::Class) {
-            $!classes.push($object);
+        if  $object ~~ ::('JSON::Infer::Class') {
+            @!classes.push($object);
         }
     }
 

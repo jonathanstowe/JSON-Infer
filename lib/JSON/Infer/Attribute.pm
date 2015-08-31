@@ -1,16 +1,7 @@
-package JSON::Infer::Attribute;
 
-use strict;
-use warnings;
+use v6;
 
-use Moose;
-with qw(
-         JSON::Infer::Role::Classes
-         JSON::Infer::Role::Types
-       );
-
-use Scalar::Util qw(reftype looks_like_number);
-use List::MoreUtils qw(any);
+=begin pod
 
 =head1 NAME
 
@@ -24,7 +15,7 @@ A description of an infered attribute
 
 =over 4
 
-=item new_from_value
+=head3 new-from-value
 
 This is an alternate constructor that will return a new object based
 on the name and attributes infered from the valie.
@@ -32,165 +23,97 @@ on the name and attributes infered from the valie.
 The third argument is the name of the class the attribute was found in
 this will be used to generate the names of any new classes found.
 
-=cut
-
-sub  new_from_value
-{
-   my ( $self, $name, $value, $class ) = @_;
-
-   my $obj = $self->new(name => $name, class => $class );
-
-   $obj->infer_from_value($value);
-
-   return $obj;
-}
-
-=item infer_from_value
+=head3 infer_from_value
 
 This does the actual work of infering the type from the value provided.
 
-=cut
-
-sub infer_from_value
-{
-   my ( $self, $value ) = @_;
-
-   my $type_constraint;
-   if ( defined $value )
-   {
-      require JSON;
-      if (JSON::is_bool($value) )
-      {
-         $type_constraint = 'Bool';
-
-      }
-      elsif ( ref($value) )
-      {
-          if (reftype($value) eq 'ARRAY') 
-          {
-             if (any { ref($_) } @{$value} )
-             {
-               my $obj = $self->process_object($value);
-               $type_constraint = 'ArrayRef[' . $obj->name() . ']';
-             }
-             else
-             {
-                $type_constraint = 'ArrayRef';
-             }
-          }
-          else
-          {
-             my $obj = $self->process_object($value);
-             $type_constraint = $obj->name();
-          }
-
-      }
-      else
-      {
-         if ( looks_like_number($value) )
-         {
-            $type_constraint = 'Num';
-         }
-         else
-         {
-            $type_constraint = 'Str';
-         }
-      }
-   }
-   else
-   {
-      # take a guess at this.
-      $type_constraint = 'Maybe[Str]';
-   }
-
-   $self->type_constraint($type_constraint);
-
-}
-
-=item process_object
+=head3 process_object
 
 This is used to process an object value returning the
 JSON::Infer::Class object.
 
-=cut
-
-sub process_object
-{
-   my ( $self, $value ) = @_;
-
-   require JSON::Infer::Class;
-
-   my $obj = JSON::Infer::Class->new_from_data($self->child_class_name(), $value);
-
-   $self->add_classes($obj);
-   $self->add_types($obj);
-   return $obj;
-}
-
-=item name
+=head3 name
 
 The name of the attribute
 
-=cut
-
-has name => (
-               is => 'rw',
-               isa   => 'Str',
-            );
-
-
-=item type_constraint
+=head3 type_constraint
 
 The infered type constraint.
 
-=cut
-
-has type_constraint  => (
-                           is => 'rw',
-                           isa   => 'Str',
-                        );
-
-
-
-
-=item class
+=head3 class
 
 Name of the class that this was being constructed for.
 
-=cut
-
-has class   => (
-                  is => 'rw',
-                  isa   => 'Str',
-               );
-
-=item child_class_name
+=head3 child_class_name
 
 Returns the name of a class that will be used for an object type based on
 this attribute.
 
-=cut
+=end pod
 
-has child_class_name => (
-      is => 'rw',
-      isa   => 'Str',
-      lazy  => 1,
-      builder  => '_get_child_class_name',
-);
+use JSON::Infer::Role::Classes;
+use JSON::Infer::Role::Types;
 
-sub _get_child_class_name 
-{
-   my ( $self ) = @_;
+class JSON::Infer::Attribute does JSON::Infer::Role::Classes does JSON::Infer::Role::Types {
 
-   my $name = $self->name();
+    method  new-from-value(Str $name, $value, $class) returns JSON::Infer::Attribute {
 
-   $name =~ s/_(.)/\U$1\E/g;
+        my $obj = self.new(name => $name, class => $class );
+        $obj.infer-from-value($value);
+        $obj;
+    }
 
-   return $self->class() . '::' . ucfirst($name);
+
+    method infer-from-value($value) {
+
+        my $type_constraint;
+
+        given $value {
+            when Array {
+                if ?$_.grep(Array|Hash) {
+                    my $obj = self.process-object($_);
+                    $type_constraint = "Array[{$obj.name}]";
+                }
+                else {
+                    $type_constraint = 'Array';
+                }
+            }
+            when Hash {
+                my $obj = self.process-object($_);
+                $type_constraint = $obj.name;
+
+            }
+            default {
+                $type_constraint = $_.WHAT.^name;
+            }
+        }
+
+        $!type-constraint = $type_constraint;
+
+    }
+
+    method process-object($value) {
+        my $obj = JSON::Infer::Class.new-from-data(self.child-class-name(), $value);
+        self.add-classes($obj);
+        self.add-types($obj);
+        $obj;
+    }
+
+
+    has Str $.name is rw;
+    has Str $.type-constraint is rw;
+    has Str $.class is rw;
+
+
+    has Str $.child-class-name is rw;
+
+    method child-class-name() returns Str is rw { 
+        if not $!child-class-name.defined {
+            my Str $name = $!name;
+            $name ~~ s:g/_(.)/{ $0.uc }/;
+            $!child-class-name = $!class ~ '::' ~ $name.tc;
+        }
+        $!child-class-name;
+    }
 }
-
-=back
-
-=cut
-
-1;
+# vim: expandtab shiftwidth=4 ft=perl6
