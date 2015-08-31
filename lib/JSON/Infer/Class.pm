@@ -40,8 +40,8 @@ Add the atribute to this class.
 
 =end pod
 
-need JSON::Infer::Role::Classes;
-need JSON::Infer::Role::Types;
+use JSON::Infer::Role::Classes;
+use JSON::Infer::Role::Types;
 
 class JSON::Infer::Class does JSON::Infer::Role::Classes does JSON::Infer::Role::Types {
 
@@ -80,7 +80,7 @@ class JSON::Infer::Class does JSON::Infer::Role::Classes does JSON::Infer::Role:
     }
 
 
-    method new_attribute(Str $name, $value) returns JSON::Infer::Attribute {
+    method new-attribute(Str $name, $value) returns JSON::Infer::Attribute {
 
         my $new = JSON::Infer::Attribute.new-from-value($name, $value, $!name);
         self.add-attribute($new);

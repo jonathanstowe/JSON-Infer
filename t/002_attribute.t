@@ -1,13 +1,15 @@
+#!perl6
+use v6;
+use Test;
+use lib 'lib';
 
-use Test::More;
+use JSON::Fast;
 
-use JSON;
-
-BEGIN { use_ok( 'JSON::Infer::Moose::Attribute' ); }
+use JSON::Infer::Attribute;
 
 
-my $object = JSON::Infer::Moose::Attribute->new ();
-isa_ok ($object, 'JSON::Infer::Moose::Attribute');
+my $object = JSON::Infer::Attribute.new();
+isa-ok($object, JSON::Infer::Attribute);
 
 
 my @tests = (
@@ -23,21 +25,21 @@ my @tests = (
                   attr_name   => 'test_attr',
                   value => 9,
                   class => 'My::Test',
-                  type_constraint   => 'Num',
+                  type_constraint   => 'Int',
                   classes  => 0,
                   description => 'value is a Number',
                },
                {
                   attr_name   => 'test_attr',
-                  value => undef,
+                  value => Str,
                   class => 'My::Test',
-                  type_constraint   => 'Maybe[Str]',
+                  type_constraint   => 'Str',
                   classes  => 0,
                   description => 'value is undefined',
                },
                {
                   attr_name   => 'test_attr',
-                  value => JSON::true(),
+                  value => True,
                   class => 'My::Test',
                   type_constraint   => 'Bool',
                   classes  => 0,
@@ -45,7 +47,7 @@ my @tests = (
                },
                {
                   attr_name   => 'test_attr',
-                  value => JSON::false(),
+                  value => False,
                   class => 'My::Test',
                   type_constraint   => 'Bool',
                   classes  => 0,
@@ -55,7 +57,7 @@ my @tests = (
                   attr_name   => 'test_attr',
                   value => ['foo'],
                   class => 'My::Test',
-                  type_constraint   => 'ArrayRef',
+                  type_constraint   => 'Array',
                   classes  => 0,
                   description => 'value is an Array of strings',
                },
@@ -79,22 +81,23 @@ my @tests = (
                   attr_name   => 'test_attr',
                   value => [{ test_attr => 'foo' }],
                   class => 'My::Test',
-                  type_constraint   => 'ArrayRef[My::Test::TestAttr]',
+                  type_constraint   => 'Array[My::Test::TestAttr]',
                   classes  => 1,
                   description => 'value is an an array of object',
                },
             );
 
 
-foreach my $test (@tests)
-{
-   ok(my $object = JSON::Infer::Moose::Attribute->new_from_value( $test->{attr_name}, $test->{value}, $test->{class}), "new_from_value " . $test->{description});
+for @tests -> $test {
+   ok(my $object = JSON::Infer::Attribute.new-from-value( $test<attr_name>, $test<value>, $test<class>), "new-from-value " ~ $test<description>);
 
-   isa_ok ($object, 'JSON::Infer::Moose::Attribute');
-   is( $object->name(), $test->{attr_name}, "got the right name" );
-   is( $object->type_constraint(), $test->{type_constraint}, "got the right type constraint" );
-   is( @{ $object->classes() }, $test->{classes}, "and " . ( $test->{classes} ? $test->{classes} : 'no' ) . ' classes' );
+   isa-ok($object, JSON::Infer::Attribute);
+   is( $object.name, $test<attr_name>, "got the right name" );
+   is( $object.type-constraint, $test<type_constraint>, "got the right type constraint" );
+   is( $object.classes.elems , $test<classes>, "and " ~ ( $test<classes> > 0 ?? $test<classes> !! 'no' ) ~ ' classes' );
 }
 
 
-done_testing();
+done-testing();
+
+# vim: expandtab shiftwidth=4 ft=perl6

@@ -93,7 +93,8 @@ class JSON::Infer::Attribute does JSON::Infer::Role::Classes does JSON::Infer::R
     }
 
     method process-object($value) {
-        my $obj = JSON::Infer::Class.new-from-data(self.child-class-name(), $value);
+        require JSON::Infer::Class;
+        my $obj = ::('JSON::Infer::Class').new-from-data(self.child-class-name(), $value);
         self.add-classes($obj);
         self.add-types($obj);
         $obj;

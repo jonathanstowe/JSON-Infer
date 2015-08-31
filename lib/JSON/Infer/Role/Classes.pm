@@ -23,7 +23,7 @@ This takes and object of this role and adds it's classes to my classes.
 role JSON::Infer::Role::Classes {
 
 
-    has ::('JSON::Infer::Class') @.classes is rw;
+    has @.classes is rw;
 
     method  add-classes(Mu:D $object) {
 
