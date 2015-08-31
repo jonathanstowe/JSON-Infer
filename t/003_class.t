@@ -1,9 +1,8 @@
-use Test::More;
+use v6;
+use Test;
+use lib 'lib';
 
-use strict;
-use warnings;
-
-use_ok('JSON::Infer::Moose::Class');
+use JSON::Infer::Class;
 
 
 my @tests = (
@@ -13,7 +12,7 @@ my @tests = (
       value => {
          foo   => 'var',
          baz   => 9,
-         yada  => undef,
+         yada  => Any,
       },
       classes  => 0,
    },
@@ -39,21 +38,20 @@ my @tests = (
    },
 );
 
-foreach my $test ( @tests )
-{
-   ok(my $object = JSON::Infer::Moose::Class->new_from_data($test->{class_name}, $test->{value}), "new_from_data " . $test->{description});
-   isa_ok($object, 'JSON::Infer::Moose::Class');
-   is($object->name(), $test->{class_name}, "got the right name");
-   is($object->attributes(), keys %{$test->{value}}, "got the right number of attributes");
-   is(@{$object->classes()}, $test->{classes}, "have " . ( $test->{classes} ? $test->{classes} : 'no' ) . " classes");
+for @tests -> $test {
+   ok(my $object = JSON::Infer::Class.new-from-data($test<class_name>, $test<value>), "new_from_data " ~ $test<description>);
+   isa-ok($object, JSON::Infer::Class);
+   is($object.name, $test<class_name>, "got the right name");
+   is($object.attributes.elems, $test<value>.keys.elems, "got the right number of attributes");
+   is($object.classes.elems, $test<classes>, "have " ~ ( $test<classes> > 0 ?? $test<classes> !! 'no' ) ~ " classes");
 
-   foreach my $attr (keys %{$test->{value}} )
-   {
-      ok(my $attr_def = $object->_attributes()->{$attr}, "got attribute $attr");
-      isa_ok($attr_def, 'JSON::Infer::Moose::Attribute');
-      is($attr_def->class(), $object->name(), "and the attribute has the right class");
+   for  $test<value>.keys -> $attr {
+      ok(my $attr_def = $object.attributes{$attr}, "got attribute $attr");
+      isa-ok($attr_def, JSON::Infer::Attribute);
+      is($attr_def.class, $object.name, "and the attribute has the right class");
    }
 
 }
 
-done_testing();
+done-testing();
+# vim: expandtab shiftwidth=4 ft=perl6
