@@ -6,9 +6,6 @@ use Test;
 
 use-ok( 'JSON::Infer' );
 
-my $object = JSON::Infer.new();
-isa_ok ($object, 'JSON::Infer');
-
 use-ok('JSON::Infer::Class');
 
 use-ok('JSON::Infer::Attribute');
