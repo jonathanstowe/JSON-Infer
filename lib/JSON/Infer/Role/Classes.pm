@@ -37,6 +37,5 @@ role JSON::Infer::Role::Classes {
             @!classes.push($object);
         }
     }
-
 }
 # vim: expandtab shiftwidth=4 ft=perl6

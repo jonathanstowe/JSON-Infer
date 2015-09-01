@@ -65,60 +65,69 @@ This returns a JSON parser object.
 
 =end pod
 
+
 class JSON::Infer:ver<v0.0.1> {
 
     our $VERSION = v0.0.1;
 
     use HTTP::UserAgent;
+    use JSON::Infer::Class;
 
-    method infer(:$uri, Str :$class-name = 'My::JSON')
-    {
+    method infer(:$uri!, Str :$class-name = 'My::JSON') returns JSON::Infer::Class {
         my $ret;
 
 
         if $uri.defined {
+
             my $resp =  self.get($uri);
 
             if $resp.is-success() {
-                require JSON::Infer::Class;
 
                 my $content = self.decode-json($resp.decoded-content());
 
-                $ret = JSON::Infer::Class.new_from_data(:$class-name, :$content);
+                $ret = JSON::Infer::Class.new-from-data(:$class-name, :$content);
             }
             else {
+                die $resp;
             }
         }
         else {
         }
 
-        return $ret;
+        $ret;
     }
 
 
-    has HTTP::UserAgent $.ua is rw handles <get>;
+    has HTTP::UserAgent $.ua is rw;
 
-    method !get-ua {
-        require HTTP::UserAgent;
-        my $ua = HTTP::UserAgent.new( default-headers   => $.headers, agent => $?PACKAGE ~ '/' ~ $VERSION);
-        $ua;
+    method get(|c) returns HTTP::Response {
+        self.ua.get(|c);
+    }
+
+    method ua() is rw returns HTTP::UserAgent {
+        if not $!ua.defined {
+            $!ua = HTTP::UserAgent.new( default-headers   => $.headers, agent => $?PACKAGE.^name ~ '/' ~ $VERSION);
+        }
+        $!ua;
     }
 
 
     has HTTP::Header $.headers is rw;
 
-    method !get-headers() {
-        require HTTP::Header;
-        my $h = HTTP::Header.new();
-        $h.header('Content-Type'  => $!content-type);
-        $h.header('Accept'  => $!content-type);
-        $h;
+    method headers() returns HTTP::Header is rw {
+
+        if not $!headers.defined {
+            $!headers = HTTP::Header.new();
+            $!headers.field('Content-Type'  => $!content-type);
+            $!headers.field('Accept'  => $!content-type);
+        }
+        $!headers;
     }
 
 
-    has $.content-type  is rw =  "application/json";
+    has Str $.content-type  is rw =  "application/json";
 
-    method decode-json(Str $content) {
+    method decode-json(Str $content) returns Any {
         use JSON::Fast;
         from-json($content);
     }

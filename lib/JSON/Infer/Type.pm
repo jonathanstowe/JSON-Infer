@@ -37,11 +37,14 @@ This is the L<JSON::Infer::Class> that this type is for.
 =end pod
 
 use JSON::Infer::Role::Entity;
-need JSON::Infer::Class;
 
 class  JSON::Infer::Type does JSON::Infer::Role::Entity {
+
+#    use JSON::Infer::Class;
+
     has Str $.subtype-of is rw handles(has-subtype => 'defined');
     has Bool $.array is rw = False;
-    has JSON::Infer::Class $.of-class is rw;
+
+    has $.of-class is rw;
 }
 # vim: expandtab shiftwidth=4 ft=perl6

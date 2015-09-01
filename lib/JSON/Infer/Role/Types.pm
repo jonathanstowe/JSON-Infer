@@ -20,22 +20,27 @@ This takes and object of this role and adds it's types to my types.
 
 =end pod
 
+require JSON::Infer::Type;
+
 role JSON::Infer::Role::Types {
 
 
-    has ::('JSON::Infer::Type') @.types is rw;
+
+    has @.types is rw;
 
 
     method  add-types(Mu:D $object ) {
 
+        my $type-name = 'JSON::Infer::Type';
 
         if $object.does($?ROLE) {
             for $object.types -> $type {
                 @!types.push($type);
             }
         }
-        if $object ~~ ::('JSON::Infer::Type') {
-             @!types.push($object);
+
+        if $object.isa(::($type-name)) {
+            @!types.push($object);
         }
     }
 }

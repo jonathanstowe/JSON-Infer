@@ -45,9 +45,13 @@ use JSON::Infer::Role::Types;
 
 class JSON::Infer::Class does JSON::Infer::Role::Classes does JSON::Infer::Role::Types {
 
-    need JSON::Infer::Attribute;
+    use JSON::Infer::Attribute;
 
-    method new-from-data(Str $name, $data ) returns JSON::Infer::Class {
+    multi method new-from-data(:$class-name, :$content) returns JSON::Infer::Class {
+        self.new-from-data($class-name, $content);
+    }
+
+    multi method new-from-data(Str $name, $data ) returns JSON::Infer::Class {
 
         my $obj = self.new(name => $name);
 
