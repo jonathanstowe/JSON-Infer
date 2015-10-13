@@ -79,7 +79,7 @@ my @tests = (
                },
                {
                   attr_name   => 'test_attr',
-                  value => [{ test_attr => 'foo' }],
+                  value => [{ test_attr => 'foo' },],
                   class => 'My::Test',
                   type_constraint   => 'Array[My::Test::TestAttr]',
                   classes  => 1,
