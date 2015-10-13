@@ -106,7 +106,7 @@ class JSON::Infer:ver<v0.0.1> {
 
     method ua() is rw returns HTTP::UserAgent {
         if not $!ua.defined {
-            $!ua = HTTP::UserAgent.new( default-headers   => $.headers, agent => $?PACKAGE.^name ~ '/' ~ $VERSION);
+            $!ua = HTTP::UserAgent.new( default-headers   => $.headers, useragent => $?PACKAGE.^name ~ '/' ~ $VERSION);
         }
         $!ua;
     }
