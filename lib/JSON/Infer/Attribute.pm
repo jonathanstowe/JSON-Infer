@@ -143,5 +143,10 @@ class JSON::Infer::Attribute does JSON::Infer::Role::Classes does JSON::Infer::R
         }
         $!child-class-name;
     }
+
+    method make-attribute(Int $level = 0) returns Str {
+        my $indent = "    " x $level;
+        $indent ~ "has { self.type-constraint } { self.sigil}.{ self.perl-name };";
+    }
 }
 # vim: expandtab shiftwidth=4 ft=perl6
