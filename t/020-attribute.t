@@ -19,6 +19,7 @@ my @tests = (
                   class => 'My::Test',
                   type_constraint   => 'Str',
                   classes  => 0,
+                  is_array  => False,
                   description => 'value is a string',
                },
                {
@@ -27,6 +28,7 @@ my @tests = (
                   class => 'My::Test',
                   type_constraint   => 'Int',
                   classes  => 0,
+                  is_array  => False,
                   description => 'value is a Number',
                },
                {
@@ -34,6 +36,7 @@ my @tests = (
                   value => Str,
                   class => 'My::Test',
                   type_constraint   => 'Str',
+                  is_array  => False,
                   classes  => 0,
                   description => 'value is undefined',
                },
@@ -42,6 +45,7 @@ my @tests = (
                   value => True,
                   class => 'My::Test',
                   type_constraint   => 'Bool',
+                  is_array  => False,
                   classes  => 0,
                   description => 'value is a boolean (true)',
                },
@@ -50,6 +54,7 @@ my @tests = (
                   value => False,
                   class => 'My::Test',
                   type_constraint   => 'Bool',
+                  is_array  => False,
                   classes  => 0,
                   description => 'value is a boolean (false)',
                },
@@ -57,7 +62,8 @@ my @tests = (
                   attr_name   => 'test_attr',
                   value => ['foo'],
                   class => 'My::Test',
-                  type_constraint   => 'Array',
+                  type_constraint   => '',
+                  is_array  => True,
                   classes  => 0,
                   description => 'value is an Array of strings',
                },
@@ -67,6 +73,7 @@ my @tests = (
                   class => 'My::Test',
                   type_constraint   => 'My::Test::TestAttr',
                   classes  => 1,
+                  is_array  => False,
                   description => 'value is an object',
                },
                {
@@ -75,13 +82,15 @@ my @tests = (
                   class => 'My::Test',
                   type_constraint   => 'My::Test::TestAttr',
                   classes  => 2,
+                  is_array  => False,
                   description => 'value is an object with an object attribute',
                },
                {
                   attr_name   => 'test_attr',
                   value => [{ test_attr => 'foo' },],
                   class => 'My::Test',
-                  type_constraint   => 'Array[My::Test::TestAttr]',
+                  type_constraint   => 'My::Test::TestAttr',
+                  is_array  => True,
                   classes  => 1,
                   description => 'value is an an array of object',
                },
@@ -93,6 +102,8 @@ for @tests -> $test {
 
    isa-ok($object, JSON::Infer::Attribute);
    is( $object.name, $test<attr_name>, "got the right name" );
+   is($object.is-array, $test<is_array>, "now it's multiplicity right");
+   is($object.sigil, $test<is_array> ?? '@' !! '$', "and the right sigil");
    is( $object.type-constraint, $test<type_constraint>, "got the right type constraint" );
    is( $object.classes.elems , $test<classes>, "and " ~ ( $test<classes> > 0 ?? $test<classes> !! 'no' ) ~ ' classes' );
 }
