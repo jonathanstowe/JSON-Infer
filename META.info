@@ -20,7 +20,7 @@
      "JSON::Infer::Attribute" : "lib/JSON/Infer/Attribute.pm",
      "JSON::Infer" : "lib/JSON/Infer.pm"
   },
-  "depends" : [ "JSON::Tiny" ],
+  "depends" : [ "JSON::Tiny", "HTTP::UserAgent" ],
   "test-depends" : [
     "Test",
     "Test::META"
