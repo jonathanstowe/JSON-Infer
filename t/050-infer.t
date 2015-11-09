@@ -16,6 +16,13 @@ my $ret;
 lives-ok { $ret = $obj.infer(uri => 'http://api.mixcloud.com/spartacus/party-time/') }, "infer from mixcloud";
 isa-ok($ret, JSON::Infer::Class, "and it does return a JSON::Infer::Class");
 
-done-testing();
-# vim: expandtab shiftwidth=4 ft=perl6
+my $class-str;
 
+lives-ok { $class-str = $ret.make-class() }, "make class";
+lives-ok { EVAL $class-str }, "and make sure that it at least evals nicely";
+
+
+
+done-testing();
+
+# vim: expandtab shiftwidth=4 ft=perl6
