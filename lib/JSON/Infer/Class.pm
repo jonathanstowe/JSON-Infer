@@ -100,5 +100,22 @@ class JSON::Infer::Class does JSON::Infer::Role::Classes does JSON::Infer::Role:
         self.add-classes($attr);
         self.add-types($attr);
     }
+
+    method make-class(Int $level  = 0) returns Str {
+        my $indent = "    " x $level;
+        my $ret = $indent ~ "class { self.name } \{";
+        my $next-level = $level + 1;
+
+        for self.classes -> $class {
+            $ret ~= "\n" ~ $class.make-class($next-level);
+        }
+
+        for self.attributes.kv -> $name, $attr {
+            $ret ~= "\n" ~ $attr.make-attribute($next-level) ;
+        }
+
+        $ret ~= "\n$indent\}";
+        $ret;
+    }
 }
 # vim: expandtab shiftwidth=4 ft=perl6
