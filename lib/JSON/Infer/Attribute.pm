@@ -102,6 +102,25 @@ class JSON::Infer::Attribute does JSON::Infer::Role::Classes does JSON::Infer::R
 
 
     has Str $.name is rw;
+    has Str $.perl-name is rw;
+
+    method perl-name() returns Str is rw {
+        if not $!perl-name.defined {
+            $!perl-name = do if $!name !~~ /^<.ident>$/ {
+                my $prefix = $!class.split('::')[*-1].lc;
+                $prefix ~ $!name;
+            }
+            else {
+                $!name;
+            }
+        }
+        $!perl-name;
+    }
+
+    method has-alternate-name() returns Bool {
+        self.perl-name ne $!name;
+    }
+
     has Str $.type-constraint is rw;
     has Str $.class is rw;
 
