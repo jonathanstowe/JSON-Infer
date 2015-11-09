@@ -70,12 +70,13 @@ class JSON::Infer::Attribute does JSON::Infer::Role::Classes does JSON::Infer::R
 
         given $value {
             when Array {
+                $!is-array = True;
                 if ?$_.grep(Array|Hash) {
                     my $obj = self.process-object($_);
-                    $type_constraint = "Array[{$obj.name}]";
+                    $type_constraint = $obj.name;
                 }
                 else {
-                    $type_constraint = 'Array';
+                    $type_constraint = '';
                 }
             }
             when Hash {
@@ -87,9 +88,7 @@ class JSON::Infer::Attribute does JSON::Infer::Role::Classes does JSON::Infer::R
                 $type_constraint = $_.WHAT.^name;
             }
         }
-
         $!type-constraint = $type_constraint;
-
     }
 
     method process-object($value) {
@@ -103,6 +102,12 @@ class JSON::Infer::Attribute does JSON::Infer::Role::Classes does JSON::Infer::R
 
     has Str $.name is rw;
     has Str $.perl-name is rw;
+
+    has Bool $.is-array = False;
+
+    method sigil() {
+        $!is-array ?? '@' !! '$';
+    }
 
     method perl-name() returns Str is rw {
         if not $!perl-name.defined {
@@ -131,6 +136,9 @@ class JSON::Infer::Attribute does JSON::Infer::Role::Classes does JSON::Infer::R
         if not $!child-class-name.defined {
             my Str $name = $!name;
             $name ~~ s:g/_(.)/{ $0.uc }/;
+            if self.is-array {
+                $name ~~ s/s$//;
+            }
             $!child-class-name = $!class ~ '::' ~ $name.tc;
         }
         $!child-class-name;
