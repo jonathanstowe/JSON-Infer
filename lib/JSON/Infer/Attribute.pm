@@ -36,7 +36,7 @@ JSON::Infer::Class object.
 
 The name of the attribute
 
-=head3 type_constraint
+=head3 type-constraint
 
 The infered type constraint.
 
@@ -44,7 +44,7 @@ The infered type constraint.
 
 Name of the class that this was being constructed for.
 
-=head3 child_class_name
+=head3 child-class-name
 
 Returns the name of a class that will be used for an object type based on
 this attribute.
@@ -146,7 +146,12 @@ class JSON::Infer::Attribute does JSON::Infer::Role::Classes does JSON::Infer::R
 
     method make-attribute(Int $level = 0) returns Str {
         my $indent = "    " x $level;
-        $indent ~ "has { self.type-constraint } { self.sigil}.{ self.perl-name };";
+        my Str $attr-str = $indent ~ "has { self.type-constraint } { self.sigil}.{ self.perl-name }";
+        if self.has-alternate-name {
+            $attr-str ~= " is json-name('{ self.name }')";
+
+        }
+        $attr-str ~ ';';
     }
 }
 # vim: expandtab shiftwidth=4 ft=perl6
