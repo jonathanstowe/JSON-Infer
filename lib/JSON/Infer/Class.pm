@@ -15,16 +15,16 @@ JSON input.
 =head2 METHODS
 
 
-=head3 new_from_data
+=head3 new-from-data
 
 This returns a L<JSON::Infer::Class> constructed from the provided
 reference.
 
-=head3 populate_from_data
+=head3 populate-from-data
 
 This performs the actual inference from a single record.
 
-=head3 new_attribute
+=head3 new-attribute
 
 =head3 name
 
@@ -32,9 +32,9 @@ This is the name of the class.
 
 =head3 attributes
 
-This is an array ref of the attributes discovered i the object.
+This is an Array of the L<JSON::Infer::Attribute> discovered in the object.
 
-=head3 add_attribute
+=head3 add-attribute
 
 Add the atribute to this class.
 
@@ -93,6 +93,8 @@ class JSON::Infer::Class does JSON::Infer::Role::Classes does JSON::Infer::Role:
 
     has Str $.name is rw;
 
+    has Bool $.top-level is rw = False;
+
     has JSON::Infer::Attribute %.attributes is rw;
 
     method add-attribute(JSON::Infer::Attribute $attr) {
@@ -103,7 +105,15 @@ class JSON::Infer::Class does JSON::Infer::Role::Classes does JSON::Infer::Role:
 
     method make-class(Int $level  = 0) returns Str {
         my $indent = "    " x $level;
-        my $ret = $indent ~ "class { self.name } \{";
+
+        my Str $ret;
+
+        if $!top-level {
+            $ret ~= "{ $indent }use JSON::Class;\n{ $indent }use JSON::Name;\n";
+
+        }
+
+        $ret ~= $indent ~ "class { self.name } \{";
         my $next-level = $level + 1;
 
         for self.classes -> $class {
@@ -116,6 +126,12 @@ class JSON::Infer::Class does JSON::Infer::Role::Classes does JSON::Infer::Role:
 
         $ret ~= "\n$indent\}";
         $ret;
+    }
+
+    method file-path() returns Str {
+        my $path = $*SPEC.catfile($!name.split('::'));
+        $path ~= '.pm';
+        $path;
     }
 }
 # vim: expandtab shiftwidth=4 ft=perl6

@@ -41,6 +41,7 @@ my @tests = (
 for @tests -> $test {
    ok(my $object = JSON::Infer::Class.new-from-data($test<class_name>, $test<value>), "new_from_data " ~ $test<description>);
    isa-ok($object, JSON::Infer::Class);
+   like $object.file-path, /\.pm$/, "file-path";
    is($object.name, $test<class_name>, "got the right name");
    is($object.attributes.elems, $test<value>.keys.elems, "got the right number of attributes");
    is($object.classes.elems, $test<classes>, "have " ~ ( $test<classes> > 0 ?? $test<classes> !! 'no' ) ~ " classes");

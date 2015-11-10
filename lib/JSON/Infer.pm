@@ -86,6 +86,7 @@ class JSON::Infer:ver<v0.0.1> {
                 my $content = self.decode-json($resp.decoded-content());
 
                 $ret = JSON::Infer::Class.new-from-data(:$class-name, :$content);
+                $ret.top-level = True;
             }
             else {
                 die $resp;
