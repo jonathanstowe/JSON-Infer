@@ -113,7 +113,7 @@ class JSON::Infer::Class does JSON::Infer::Role::Classes does JSON::Infer::Role:
 
         }
 
-        $ret ~= $indent ~ "class { self.name } \{";
+        $ret ~= $indent ~ "class { self.name } does JSON::Class \{";
         my $next-level = $level + 1;
 
         for self.classes -> $class {
