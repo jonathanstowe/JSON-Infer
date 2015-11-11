@@ -16,7 +16,9 @@ Generalised exception class
 
 =end pod
 
-class JSON::Infer::Exception does Exception {
-   has $.message is rw;
+class JSON::Infer::Exception is Exception {
+   has Str $.message is rw;
+   has Str $.uri is rw;
+   has Exception $.inner-exception is rw;
 }
 # vim: expandtab shiftwidth=4 ft=perl6
