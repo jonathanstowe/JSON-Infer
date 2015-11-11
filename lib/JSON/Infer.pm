@@ -87,6 +87,7 @@ class JSON::Infer:ver<v0.0.1>:auth<github:jonathanstowe> {
 
     use HTTP::UserAgent;
     use JSON::Infer::Class;
+    use JSON::Infer::Exception;
 
     method infer(:$uri!, Str :$class-name = 'My::JSON') returns JSON::Infer::Class {
         my $ret;
@@ -104,7 +105,7 @@ class JSON::Infer:ver<v0.0.1>:auth<github:jonathanstowe> {
                 $ret.top-level = True;
             }
             else {
-                die $resp;
+                JSON::Infer::Exception.new(:$uri, message => "Couldn't retrieve URI $uri").throw;
             }
         }
         else {
