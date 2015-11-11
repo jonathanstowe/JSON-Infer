@@ -10,20 +10,38 @@ JSON::Infer - Infer Moose Classes from JSON objects
 
 =begin code
 
-  use JSON::Infer;
+
+# Use the script to do it simply:
+# Create the modules in the directory "foo"
+
+p6-json-infer --uri=http://api.mixcloud.com/spartacus/party-time/ --out-dir=foo --class-name=Mixcloud::Show
+
+# Or do it in your own code:
+
+use JSON::Infer;
+
+my $obj = JSON::Infer.new()
+my $ret = $obj.infer(uri => 'http://api.mixcloud.com/spartacus/party-time/', class-name => 'Mixcloud::Show');
+
+say $ret.make-class; # Print the class definition
 
 =end code
 
 
 =head1 DESCRIPTION
 
-This provides a mechanism for creating some stub Moose classes from 
-the return of a REST Call.
+JSON is nearly ubiquitous on the internet, developers love it for making
+APIs.  However the webservices that use it for transfer of data rarely
+have a machine readable specification that can be turned into code so
+developers who want to consume these services usually have to make the
+client definition themselves.
+
+This module aims to provide a way to generate Perl 6 classes that can represent
+the data from a JSON source.  The structure and the types of the data is
+inferred from a single data item so the accuracy may depend on the
+consistency of the data.
 
 =head2 METHODS
-
-=over 4
-
 
 =head3 infer
 
@@ -33,40 +51,37 @@ it will throw an exception.
 
 It requires the following named arguments:
 
-=over 4
-
-=head3 uri
+=head4 uri
 
 This is the uri that will be used to retrieve the content.  It will need
-to be some protocol scheme that is understood by L<LWP::UserAgent>
+to be some protocol scheme that is understood by L<HTTP::UserAgent>. This
+is required.
 
-=head3 class_name
+=head4 class-name
 
-This is the base class name that will be used for the package, any child classes that are discovered will parsing the
-attributes will have a name based on this and the name of the attribute.
+This is the name that will be used for the generated class, any child
+classes that are discovered will parsing the attributes will have a name
+based on this and the name of the attribute. If it is not supplied the
+default is C<My::JSON> will be used.
 
 =head3 ua
 
-The L<LWP::UserAgent> that will be used. 
+The L<HTTP::UserAgent> that will be used. 
 
 =head3 headers
 
 Returns the default set of headers that will be applied to the
-LWP::UserAgent object.
+HTTP::UserAgent object.
 
-=head3 content_type
+=head3 content-type
 
 This is the content type that we want to use.  The default is
 "application/json".
 
-=head3 json_parser
-
-This returns a JSON parser object.
-
 =end pod
 
 
-class JSON::Infer:ver<v0.0.1> {
+class JSON::Infer:ver<v0.0.1>:auth<github:jonathanstowe> {
 
     our $VERSION = v0.0.1;
 

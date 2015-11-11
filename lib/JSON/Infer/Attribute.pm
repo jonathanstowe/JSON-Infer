@@ -23,22 +23,36 @@ on the name and attributes infered from the valie.
 The third argument is the name of the class the attribute was found in
 this will be used to generate the names of any new classes found.
 
-=head3 infer_from_value
+=head3 infer-from-value
 
 This does the actual work of infering the type from the value provided.
 
-=head3 process_object
+=head3 process-object
 
 This is used to process an object value returning the
-JSON::Infer::Class object.
+L<JSON::Infer::Class> object.
 
 =head3 name
 
-The name of the attribute
+The name of the attribute as found in the JSON data.
+
+=head3 perl-name
+
+The rules for what a valid Perl identifier can be are more restrictive
+than those for JSON attribute names (which can be nearly any string,) this
+returns a sanitised version of the JSON name to be used when generating
+Perl code.
+
+=head3 has-alternate-name
+
+This is a L<Bool> to indicate whether C<name> and C<perl-name> differ.  
+This is used internally when generating a string repreesentation of the
+attribute to determine whether the C<json-name> trait is required.
+
 
 =head3 type-constraint
 
-The infered type constraint.
+The infered type constraint name.
 
 =head3 class
 
@@ -48,6 +62,18 @@ Name of the class that this was being constructed for.
 
 Returns the name of a class that will be used for an object type based on
 this attribute.
+
+=head3 is-array
+
+A L<Bool> to indicate whether the attribute is an array or not.
+
+=head3 sigil
+
+This returns the sigil that should be used for the attribute (e.g '$', '@')
+
+=head3 make-attribute
+
+This returns a suitable string representation of the attribute for Perl.
 
 =end pod
 
@@ -144,7 +170,7 @@ class JSON::Infer::Attribute does JSON::Infer::Role::Classes does JSON::Infer::R
         $!child-class-name;
     }
 
-    method make-attribute(Int $level = 0) returns Str {
+    multi method make-attribute(Int $level = 0) returns Str {
         my $indent = "    " x $level;
         my Str $attr-str = $indent ~ "has { self.type-constraint } { self.sigil}.{ self.perl-name }";
         if self.has-alternate-name {

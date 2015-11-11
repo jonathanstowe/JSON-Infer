@@ -14,29 +14,67 @@ JSON input.
 
 =head2 METHODS
 
+=head3 attribute name
 
-=head3 new-from-data
+This is the name of the class.
+
+=head3 attribute attributes
+
+This is a L<Hash> of the L<JSON::Infer::Attribute> discovered in the object
+keyed by the name of the attribute.
+
+=head3 attribute top-level
+
+This is a L<Bool> that indicates whether the class is the first one
+encountered.  It will be set by C<infer> method of L<JSON::Infer> on
+the class that it will return.
+
+This is used internally by C<make-class> to determine whether it should
+add any preamble that might be required.
+
+=head3 method new-from-data
+
+    multi method new-from-data(:$class-name, :$content) returns JSON::Infer::Class
+    multi method new-from-data(Str $name, $data ) returns JSON::Infer::Class
 
 This returns a L<JSON::Infer::Class> constructed from the provided
 reference.
 
-=head3 populate-from-data
+=head3 method populate-from-data
+
+    method populate-from-data(JSON::Class:D: $datum)
 
 This performs the actual inference from a single record.
 
-=head3 new-attribute
+=head3 method new-attribute
 
-=head3 name
+    method new-attribute(Str $name, $value) returns JSON::Infer::Attribute 
 
-This is the name of the class.
+This creates a new attribute with the supplied name and its type infered
+from the supplied C<$value> and adds it to the class, returning the
+new L<JSON::Infer::Attribute>.
 
-=head3 attributes
+=head3 method add-attribute
 
-This is an Array of the L<JSON::Infer::Attribute> discovered in the object.
+    method add-attribute(JSON::Infer::Attribute $attr)
 
-=head3 add-attribute
+Add the attribute to this class, along with any classes that may have been
+discovered
 
-Add the atribute to this class.
+=head3 method make-class
+
+    multi method make-class(Int $level  = 0) returns Str
+
+This returns the string representation of the class that has been
+constructed. The argument C<$level> indicates the depth within the
+nested structure and controls the indentation.
+
+=head3 method file-path
+
+    method file-path() returns Str
+
+This creates the suggested file path that can be used to save the output
+of C<make-class>.  
 
 =end pod
 
@@ -103,7 +141,7 @@ class JSON::Infer::Class does JSON::Infer::Role::Classes does JSON::Infer::Role:
         self.add-types($attr);
     }
 
-    method make-class(Int $level  = 0) returns Str {
+    multi method make-class(Int $level  = 0) returns Str {
         my $indent = "    " x $level;
 
         my Str $ret;
