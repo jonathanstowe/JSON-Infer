@@ -3,6 +3,13 @@
 use JSON::Infer;
 
 multi sub MAIN(Str :$uri!, Str :$out-dir = "lib", Str :$class-name) {
+
+    CATCH {
+        when JSON::Infer::Exception {
+            note $_.message;
+            exit 5;
+        }
+    }
     my IO::Path $base-dir = do if $out-dir.IO.is-relative {
         $*CWD.child($out-dir);
     }
