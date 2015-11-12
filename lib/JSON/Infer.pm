@@ -145,7 +145,7 @@ class JSON::Infer:ver<v0.0.1>:auth<github:jonathanstowe> {
     has Str $.content-type  is rw =  "application/json";
 
     method decode-json(Str $content) returns Any {
-        use JSON::Fast;
+        use JSON::Tiny;
         from-json($content);
     }
 
