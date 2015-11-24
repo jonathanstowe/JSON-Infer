@@ -14,7 +14,7 @@ JSON::Infer::Role::Classes
 
 =head3 classes
 
-=head3 add_classes
+=head3 add-classes
 
 This takes and object of this role and adds it's classes to my classes.
 
@@ -29,7 +29,9 @@ role JSON::Infer::Role::Classes {
 
         if $object.does($?ROLE) {
             for $object.classes -> $class {
-                @!classes.push($class);
+                if !?@!classes.grep({$class.name eq $_.name}) {
+                    @!classes.push($class);
+                }
             }
         }
 

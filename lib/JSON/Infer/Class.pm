@@ -85,13 +85,15 @@ class JSON::Infer::Class does JSON::Infer::Role::Classes does JSON::Infer::Role:
 
     use JSON::Infer::Attribute;
 
-    multi method new-from-data(:$class-name, :$content) returns JSON::Infer::Class {
-        self.new-from-data($class-name, $content);
+    has Bool $.inner-class = False;
+
+    multi method new-from-data(:$class-name, :$content, Bool :$inner-class = False) returns JSON::Infer::Class {
+        self.new-from-data($class-name, $content, $inner-class);
     }
 
-    multi method new-from-data(Str $name, $data ) returns JSON::Infer::Class {
+    multi method new-from-data(Str $name, $data, $inner-class = False ) returns JSON::Infer::Class {
 
-        my $obj = self.new(name => $name);
+        my $obj = self.new(:$name, :$inner-class);
 
         my @data;
 
@@ -124,7 +126,7 @@ class JSON::Infer::Class does JSON::Infer::Role::Classes does JSON::Infer::Role:
 
     method new-attribute(Str $name, $value) returns JSON::Infer::Attribute {
 
-        my $new = JSON::Infer::Attribute.new-from-value($name, $value, $!name);
+        my $new = JSON::Infer::Attribute.new-from-value($name, $value, $!name, $!inner-class);
         self.add-attribute($new);
         $new;
     }

@@ -82,9 +82,9 @@ use JSON::Infer::Role::Types;
 
 class JSON::Infer::Attribute does JSON::Infer::Role::Classes does JSON::Infer::Role::Types {
 
-    method  new-from-value(Str $name, $value, $class) returns JSON::Infer::Attribute {
+    method  new-from-value(Str $name, $value, $class, Bool $inner-class = False) returns JSON::Infer::Attribute {
 
-        my $obj = self.new(name => $name, class => $class );
+        my $obj = self.new(:$name, :$class, :$inner-class );
         $obj.infer-from-value($value);
         $obj;
     }
@@ -119,7 +119,7 @@ class JSON::Infer::Attribute does JSON::Infer::Role::Classes does JSON::Infer::R
 
     method process-object($value) {
         require JSON::Infer::Class;
-        my $obj = ::('JSON::Infer::Class').new-from-data(self.child-class-name(), $value);
+        my $obj = ::('JSON::Infer::Class').new-from-data(self.child-class-name(), $value, True);
         self.add-classes($obj);
         self.add-types($obj);
         $obj;
@@ -130,6 +130,7 @@ class JSON::Infer::Attribute does JSON::Infer::Role::Classes does JSON::Infer::R
     has Str $.perl-name is rw;
 
     has Bool $.is-array = False;
+    has Bool $.inner-class = False;
 
     method sigil() {
         $!is-array ?? '@' !! '$';
@@ -165,7 +166,7 @@ class JSON::Infer::Attribute does JSON::Infer::Role::Classes does JSON::Infer::R
             if self.is-array {
                 $name ~~ s/s$//;
             }
-            $!child-class-name = $!class ~ '::' ~ $name.tc;
+            $!child-class-name =  $name.tc;
         }
         $!child-class-name;
     }

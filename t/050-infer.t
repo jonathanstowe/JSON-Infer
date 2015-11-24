@@ -25,6 +25,7 @@ isa-ok($ret, JSON::Infer::Class, "and it does return a JSON::Infer::Class");
 my $class-str;
 
 lives-ok { $class-str = $ret.make-class() }, "make class";
+
 lives-ok { EVAL $class-str }, "and make sure that it at least evals nicely";
 
 my $type;
