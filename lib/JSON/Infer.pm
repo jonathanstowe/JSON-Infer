@@ -81,9 +81,9 @@ This is the content type that we want to use.  The default is
 =end pod
 
 
-class JSON::Infer:ver<v0.0.2>:auth<github:jonathanstowe> {
+class JSON::Infer:ver<v0.0.3>:auth<github:jonathanstowe> {
 
-    our $VERSION = v0.0.1;
+    our $VERSION = v0.0.3;
 
     #use HTTP::UserAgent;
     use JSON::Infer::Class;
