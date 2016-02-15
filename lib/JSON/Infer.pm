@@ -117,7 +117,7 @@ class JSON::Infer:ver<0.0.6>:auth<github:jonathanstowe> {
         samewith(:$json, :$class-name);
     }
 
-    multi method infer(Str:D :$json!, :$class-name = 'My::JSON') returns JSON::Infer::Class {
+    multi method infer(Str:D :$json!, Str :$class-name = 'My::JSON') returns JSON::Infer::Class {
         my $content = self.decode-json($json);
         my $ret = JSON::Infer::Class.new-from-data(:$class-name, :$content);
         $ret.top-level = True;
