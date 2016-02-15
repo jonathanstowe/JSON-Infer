@@ -86,6 +86,7 @@ class JSON::Infer:ver<0.0.6>:auth<github:jonathanstowe> {
 
     use JSON::Infer::Class;
     use JSON::Infer::Exception;
+    use HTTP::UserAgent;
 
     proto method infer(|c) { * }
 
@@ -132,9 +133,8 @@ class JSON::Infer:ver<0.0.6>:auth<github:jonathanstowe> {
     }
 
     method ua() is rw {
-        require HTTP::UserAgent;
         if not $!ua.defined {
-            $!ua = ::('HTTP::UserAgent').new( default-headers   => $.headers, useragent => $?PACKAGE.^name ~ '/' ~ $?PACKAGE.^ver);
+            $!ua = HTTP::UserAgent.new( default-headers   => $.headers, useragent => $?PACKAGE.^name ~ '/' ~ $?PACKAGE.^ver);
         }
         $!ua;
     }
