@@ -81,34 +81,46 @@ This is the content type that we want to use.  The default is
 =end pod
 
 
-class JSON::Infer:ver<0.0.5>:auth<github:jonathanstowe> {
+class JSON::Infer:ver<0.0.6>:auth<github:jonathanstowe> {
 
 
     use JSON::Infer::Class;
     use JSON::Infer::Exception;
 
-    method infer(:$uri!, Str :$class-name = 'My::JSON') returns JSON::Infer::Class {
+    proto method infer(|c) { * }
+
+    multi method infer(Str:D :$uri!, Str :$class-name = 'My::JSON') returns JSON::Infer::Class {
         my $ret;
-
-
-        if $uri.defined {
-
-            my $resp =  self.get($uri);
-
-            if $resp.is-success() {
-
-                my $content = self.decode-json($resp.decoded-content());
-
-                $ret = JSON::Infer::Class.new-from-data(:$class-name, :$content);
-                $ret.top-level = True;
-            }
-            else {
-                JSON::Infer::Exception.new(:$uri, message => "Couldn't retrieve URI $uri").throw;
-            }
+        my $resp =  self.get($uri);
+        if $resp.is-success() {
+            my $json = $resp.decoded-content();
+            $ret = samewith(:$json, :$class-name);
         }
         else {
+            JSON::Infer::Exception.new(:$uri, message => "Couldn't retrieve URI $uri").throw;
         }
+        $ret;
+    }
 
+    multi method infer(Str:D :$file!, :$class-name = 'My::JSON') returns JSON::Infer::Class {
+        my $io = $file.IO;
+        if $io.e {
+            samewith(file => $io, :$class-name);
+        }
+        else {
+            JSON::Infer::Exception.new(uri => $file, message => "File $file does not exist").throw;
+        }
+    }
+
+    multi method infer(IO::Path:D :$file!, :$class-name = 'My::JSON') returns JSON::Infer::Class {
+        my $json = $file.slurp();
+        samewith(:$json, :$class-name);
+    }
+
+    multi method infer(Str:D :$json!, :$class-name = 'My::JSON') returns JSON::Infer::Class {
+        my $content = self.decode-json($json);
+        my $ret = JSON::Infer::Class.new-from-data(:$class-name, :$content);
+        $ret.top-level = True;
         $ret;
     }
 
