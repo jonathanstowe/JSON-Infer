@@ -216,7 +216,7 @@ This returns a suitable string representation of the attribute for Perl.
 use JSON::Tiny;
 use HTTP::UserAgent;
 
-class JSON::Infer:ver<0.0.8>:auth<github:jonathanstowe> {
+class JSON::Infer:ver<0.0.9>:auth<github:jonathanstowe> {
 
     
     role Classes        { ... }
@@ -225,7 +225,7 @@ class JSON::Infer:ver<0.0.8>:auth<github:jonathanstowe> {
     class Class         { ... }
     class Type          { ... }
 
-    class X::Exception is Exception {
+    class X::Infer is Exception {
         has Str         $.message is rw;
         has Str         $.uri is rw;
         has Exception   $.inner-exception is rw;
@@ -473,7 +473,7 @@ class JSON::Infer:ver<0.0.8>:auth<github:jonathanstowe> {
             $ret = samewith(:$json, :$class-name);
         }
         else {
-            X::Exception.new(:$uri, message => "Couldn't retrieve URI $uri").throw;
+            X::Infer.new(:$uri, message => "Couldn't retrieve URI $uri").throw;
         }
         $ret;
     }
@@ -484,7 +484,7 @@ class JSON::Infer:ver<0.0.8>:auth<github:jonathanstowe> {
             samewith(file => $io, :$class-name);
         }
         else {
-            X::Exception.new(uri => $file, message => "File $file does not exist").throw;
+            X::Infer.new(uri => $file, message => "File $file does not exist").throw;
         }
     }
 

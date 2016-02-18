@@ -5,7 +5,7 @@ use JSON::Infer;
 multi sub MAIN(Str :$file, Str :$uri, Str :$out-dir = "lib", Str :$class-name!) {
 
     CATCH {
-        when JSON::Infer::Exception {
+        when X::Infer {
             note $_.message;
             exit 5;
         }

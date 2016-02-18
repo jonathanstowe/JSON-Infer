@@ -26,5 +26,5 @@
     "Test::META"
   ],
   "description" : "Infer Perl 6 Classes from JSON input",
-  "version" : "0.0.8"
+  "version" : "0.0.9"
 }
