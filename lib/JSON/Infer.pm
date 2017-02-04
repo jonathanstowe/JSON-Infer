@@ -278,14 +278,15 @@ class JSON::Infer:ver<0.0.14>:auth<github:jonathanstowe> {
 
     class Class does Classes does Types {
 
-        has Bool $.inner-class = False;
+        has Bool $.inner-class  = False;
+        has Bool $.kebab        = False;
 
-        multi method new-from-data(:$class-name, :$content, Bool :$inner-class = False) returns Class {
-            self.new-from-data($class-name, $content, $inner-class);
+        multi method new-from-data(:$class-name, :$content, Bool :$inner-class = False, Bool :$kebab = False) returns Class {
+            self.new-from-data($class-name, $content, $inner-class, :$kebab);
         }
 
-        multi method new-from-data(Str $name, $data, $inner-class = False ) returns Class {
-            my $obj = self.new(:$name, :$inner-class);
+        multi method new-from-data(Str $name, $data, $inner-class = False, Bool :$kebab = False ) returns Class {
+            my $obj = self.new(:$name, :$inner-class, :$kebab);
 
             my @data;
 
@@ -317,7 +318,7 @@ class JSON::Infer:ver<0.0.14>:auth<github:jonathanstowe> {
 
         method new-attribute(Str $name, $value) returns Attribute {
 
-            my $new = Attribute.new-from-value($name, $value, $!name, $!inner-class);
+            my $new = Attribute.new-from-value($name, $value, $!name, $!inner-class, :$!kebab);
             self.add-attribute($new);
             $new;
         }
@@ -367,8 +368,8 @@ class JSON::Infer:ver<0.0.14>:auth<github:jonathanstowe> {
 
     class Attribute does Classes does Types {
 
-        method  new-from-value(Str $name, $value, $class, Bool $inner-class = False) returns Attribute {
-            my $obj = self.new(:$name, :$class, :$inner-class );
+        method  new-from-value(Str $name, $value, $class, Bool $inner-class = False, Bool :$kebab = False) returns Attribute {
+            my $obj = self.new(:$name, :$class, :$inner-class, :$kebab );
             $obj.infer-from-value($value);
             $obj;
         }
@@ -400,7 +401,7 @@ class JSON::Infer:ver<0.0.14>:auth<github:jonathanstowe> {
         }
 
         method process-object($value) {
-            my $obj = Class.new-from-data(self.child-class-name(), $value, True);
+            my $obj = Class.new-from-data(self.child-class-name(), $value, True, :$!kebab);
             self.add-classes($obj);
             self.add-types($obj);
             $obj;
@@ -410,8 +411,9 @@ class JSON::Infer:ver<0.0.14>:auth<github:jonathanstowe> {
         has Str $.name is rw;
         has Str $.perl-name is rw;
 
-        has Bool $.is-array = False;
-        has Bool $.inner-class = False;
+        has Bool $.is-array     = False;
+        has Bool $.inner-class  = False;
+        has Bool $.kebab        = False;
 
         method sigil() {
             $!is-array ?? '@' !! '$';
@@ -465,12 +467,12 @@ class JSON::Infer:ver<0.0.14>:auth<github:jonathanstowe> {
 
     proto method infer(|c) { * }
 
-    multi method infer(Str:D :$uri!, Str :$class-name = 'My::JSON') returns Class {
+    multi method infer(Str:D :$uri!, Str :$class-name = 'My::JSON', Bool :$kebab = False) returns Class {
         my $ret;
         my $resp =  self.get($uri);
         if $resp.is-success() {
             my $json = $resp.decoded-content();
-            $ret = self.infer(:$json, :$class-name);
+            $ret = self.infer(:$json, :$class-name, :$kebab);
         }
         else {
             X::Infer.new(:$uri, message => "Couldn't retrieve URI $uri").throw;
@@ -478,24 +480,24 @@ class JSON::Infer:ver<0.0.14>:auth<github:jonathanstowe> {
         $ret;
     }
 
-    multi method infer(Str:D :$file!, :$class-name = 'My::JSON') returns Class {
+    multi method infer(Str:D :$file!, :$class-name = 'My::JSON', Bool :$kebab = False) returns Class {
         my $io = $file.IO;
         if $io.e {
-            self.infer(file => $io, :$class-name);
+            self.infer(file => $io, :$class-name, :$kebab);
         }
         else {
             X::Infer.new(uri => $file, message => "File $file does not exist").throw;
         }
     }
 
-    multi method infer(IO::Path:D :$file!, :$class-name = 'My::JSON') returns Class {
+    multi method infer(IO::Path:D :$file!, :$class-name = 'My::JSON', Bool :$kebab = False) returns Class {
         my $json = $file.slurp();
-        self.infer(:$json, :$class-name);
+        self.infer(:$json, :$class-name, :$kebab);
     }
 
-    multi method infer(Str:D :$json!, Str :$class-name = 'My::JSON') returns Class {
+    multi method infer(Str:D :$json!, Str :$class-name = 'My::JSON', Bool :$kebab = False) returns Class {
         my $content = self.decode-json($json);
-        my $ret = Class.new-from-data(:$class-name, :$content);
+        my $ret = Class.new-from-data(:$class-name, :$content, :$kebab);
         $ret.top-level = True;
         $ret;
     }
