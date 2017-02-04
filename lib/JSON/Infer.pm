@@ -419,17 +419,24 @@ class JSON::Infer:ver<0.0.14>:auth<github:jonathanstowe> {
             $!is-array ?? '@' !! '$';
         }
 
-        method perl-name() returns Str is rw {
-            if not $!perl-name.defined {
-                $!perl-name = do if $!name !~~ /^<.ident>$/ {
-                    my $prefix = $!class.split('::')[*-1].lc;
-                    $prefix ~ $!name;
-                }
-                else {
-                    $!name;
-                }
+        method !kebab(Str $name) returns Str {
+            if $!kebab {
+                $name.subst(/_/, '-', :g);
             }
-            $!perl-name;
+            else {
+                $name;
+            }
+        }
+
+        method perl-name() returns Str is rw {
+            $!perl-name //= do {
+                my $name = $!name;
+                if $name !~~ /^<.ident>$/ {
+                    my $prefix = $!class.split('::')[*-1].lc;
+                    $name = $prefix ~ $name;
+                }
+                self!kebab($name);
+            }
         }
 
         method has-alternate-name() returns Bool {
