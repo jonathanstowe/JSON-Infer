@@ -45,6 +45,12 @@ consistency of the data.
 
 =head3 infer
 
+    multi method infer(Str:D :$uri!, Str :$class-name = 'My::JSON', Bool :$kebab = False) returns Class
+    multi method infer(Str:D :$file!, :$class-name = 'My::JSON', Bool :$kebab = False) returns Class
+    multi method infer(IO::Path:D :$file!, :$class-name = 'My::JSON', Bool :$kebab = False) returns Class
+    multi method infer(Str:D :$json!, Str :$class-name = 'My::JSON', Bool :$kebab = False) returns Class 
+
+
 This accepts a single path and returns a L<JSON::Infer::Class>
 object, if there is an error retrieving the data or parsing the response
 it will throw an exception.
@@ -63,6 +69,11 @@ This is the name that will be used for the generated class, any child
 classes that are discovered will parsing the attributes will have a name
 based on this and the name of the attribute. If it is not supplied the
 default is C<My::JSON> will be used.
+
+=head4 kebab
+
+If this is provided then the names of the attributes will be turned into the
+more popular Perl 6 style with underscores replaced with hyphens.
 
 =head3 ua
 
@@ -104,11 +115,12 @@ add any preamble that might be required.
 
 =head3 method new-from-data
 
-    multi method new-from-data(:$class-name, :$content) returns JSON::Infer::Class
-    multi method new-from-data(Str $name, $data ) returns JSON::Infer::Class
+    multi method new-from-data(:$class-name, :$content, :kebab) returns JSON::Infer::Class
+    multi method new-from-data(Str $name, $data, :kebab ) returns JSON::Infer::Class
 
 This returns a L<JSON::Infer::Class> constructed from the provided
-reference.
+reference.  If the adverb C<kebab> is provided then this will be
+applied to the attributes, causing the names to be adjusted accordingly.
 
 =head3 method populate-from-data
 
@@ -158,6 +170,10 @@ on the name and attributes infered from the valie.
 
 The third argument is the name of the class the attribute was found in
 this will be used to generate the names of any new classes found.
+
+If the adverb C<kebab> is provided then the name of the attribute will
+be adjusted to be in the more popular style with hyphens instead of
+underscores.
 
 =head3 infer-from-value
 
