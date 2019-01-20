@@ -7,7 +7,7 @@
     "source": "git://github.com/jonathanstowe/JSON-Infer.git",
     "bugtracker": "https://github.com/jonathanstowe/JSON-Infer/issues"
   },
-  "perl": "6.c",
+  "perl": "6.*",
   "resources": [
     
   ],
