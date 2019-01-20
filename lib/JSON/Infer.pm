@@ -297,11 +297,11 @@ class JSON::Infer:ver<0.0.15>:auth<github:jonathanstowe> {
         has Bool $.inner-class  = False;
         has Bool $.kebab        = False;
 
-        multi method new-from-data(:$class-name, :$content, Bool :$inner-class = False, Bool :$kebab = False) returns Class {
+        multi method new-from-data(:$class-name, :$content, Bool :$inner-class = False, Bool :$kebab = False --> Class ) {
             self.new-from-data($class-name, $content, $inner-class, :$kebab);
         }
 
-        multi method new-from-data(Str $name, $data, $inner-class = False, Bool :$kebab = False ) returns Class {
+        multi method new-from-data(Str $name, $data, $inner-class = False, Bool :$kebab = False --> Class ) {
             my $obj = self.new(:$name, :$inner-class, :$kebab);
 
             my @data;
@@ -332,7 +332,7 @@ class JSON::Infer:ver<0.0.15>:auth<github:jonathanstowe> {
         }
 
 
-        method new-attribute(Str $name, $value) returns Attribute {
+        method new-attribute(Str $name, $value --> Attribute ) {
 
             my $new = Attribute.new-from-value($name, $value, $!name, $!inner-class, :$!kebab);
             self.add-attribute($new);
@@ -351,7 +351,7 @@ class JSON::Infer:ver<0.0.15>:auth<github:jonathanstowe> {
             self.add-types($attr);
         }
 
-        multi method make-class(Int $level  = 0) returns Str {
+        multi method make-class(Int $level  = 0 --> Str ) {
             my $indent = "    " x $level;
             my Str $ret;
 
@@ -374,7 +374,7 @@ class JSON::Infer:ver<0.0.15>:auth<github:jonathanstowe> {
             $ret;
         }
 
-        method file-path() returns Str {
+        method file-path( --> Str ) {
             my $path = $*SPEC.catfile($!name.split('::'));
             $path ~= '.pm';
             $path;
@@ -384,7 +384,7 @@ class JSON::Infer:ver<0.0.15>:auth<github:jonathanstowe> {
 
     class Attribute does Classes does Types {
 
-        method  new-from-value(Str $name, $value, $class, Bool $inner-class = False, Bool :$kebab = False) returns Attribute {
+        method  new-from-value(Str $name, $value, $class, Bool $inner-class = False, Bool :$kebab = False --> Attribute ) {
             my $obj = self.new(:$name, :$class, :$inner-class, :$kebab );
             $obj.infer-from-value($value);
             $obj;
@@ -431,11 +431,11 @@ class JSON::Infer:ver<0.0.15>:auth<github:jonathanstowe> {
         has Bool $.inner-class  = False;
         has Bool $.kebab        = False;
 
-        method sigil() {
+        method sigil( --> Str ) {
             $!is-array ?? '@' !! '$';
         }
 
-        method !kebab(Str $name) returns Str {
+        method !kebab(Str $name --> Str ) {
             if $!kebab {
                 $name.subst(/_/, '-', :g);
             }
@@ -444,7 +444,7 @@ class JSON::Infer:ver<0.0.15>:auth<github:jonathanstowe> {
             }
         }
 
-        method perl-name() returns Str is rw {
+        method perl-name( --> Str ) is rw {
             $!perl-name //= do {
                 my $name = $!name;
                 if $name !~~ /^<.ident>$/ {
@@ -455,7 +455,7 @@ class JSON::Infer:ver<0.0.15>:auth<github:jonathanstowe> {
             }
         }
 
-        method has-alternate-name() returns Bool {
+        method has-alternate-name( --> Bool ) {
             self.perl-name ne $!name;
         }
 
@@ -465,7 +465,7 @@ class JSON::Infer:ver<0.0.15>:auth<github:jonathanstowe> {
 
         has Str $.child-class-name is rw;
 
-        method child-class-name() returns Str is rw { 
+        method child-class-name( --> Str ) is rw { 
             if not $!child-class-name.defined {
                 my Str $name = $!name;
                 $name ~~ s:g/_(.)/{ $0.uc }/;
@@ -477,7 +477,7 @@ class JSON::Infer:ver<0.0.15>:auth<github:jonathanstowe> {
             $!child-class-name;
         }
 
-        multi method make-attribute(Int $level = 0) returns Str {
+        multi method make-attribute(Int $level = 0 --> Str ) {
             my $indent = "    " x $level;
             my Str $attr-str = $indent ~ "has { self.type-constraint } { self.sigil}.{ self.perl-name }";
             if self.has-alternate-name {
@@ -490,7 +490,7 @@ class JSON::Infer:ver<0.0.15>:auth<github:jonathanstowe> {
 
     proto method infer(|c) { * }
 
-    multi method infer(Str:D :$uri!, Str :$class-name = 'My::JSON', Bool :$kebab = False) returns Class {
+    multi method infer(Str:D :$uri!, Str :$class-name = 'My::JSON', Bool :$kebab = False --> Class ) {
         my $ret;
         my $resp =  self.get($uri);
         if $resp.is-success() {
@@ -503,7 +503,7 @@ class JSON::Infer:ver<0.0.15>:auth<github:jonathanstowe> {
         $ret;
     }
 
-    multi method infer(Str:D :$file!, :$class-name = 'My::JSON', Bool :$kebab = False) returns Class {
+    multi method infer(Str:D :$file!, :$class-name = 'My::JSON', Bool :$kebab = False --> Class ) {
         my $io = $file.IO;
         if $io.e {
             self.infer(file => $io, :$class-name, :$kebab);
@@ -513,12 +513,12 @@ class JSON::Infer:ver<0.0.15>:auth<github:jonathanstowe> {
         }
     }
 
-    multi method infer(IO::Path:D :$file!, :$class-name = 'My::JSON', Bool :$kebab = False) returns Class {
+    multi method infer(IO::Path:D :$file!, :$class-name = 'My::JSON', Bool :$kebab = False --> Class ) {
         my $json = $file.slurp();
         self.infer(:$json, :$class-name, :$kebab);
     }
 
-    multi method infer(Str:D :$json!, Str :$class-name = 'My::JSON', Bool :$kebab = False) returns Class {
+    multi method infer(Str:D :$json!, Str :$class-name = 'My::JSON', Bool :$kebab = False --> Class ) {
         my $content = self.decode-json($json);
         my $ret = Class.new-from-data(:$class-name, :$content, :$kebab);
         $ret.top-level = True;
@@ -532,7 +532,7 @@ class JSON::Infer:ver<0.0.15>:auth<github:jonathanstowe> {
         self.ua.get(|c);
     }
 
-    method ua() is rw {
+    method ua( --> HTTP::UserAgent ) is rw {
         if not $!ua.defined {
             $!ua = HTTP::UserAgent.new( default-headers   => $.headers, useragent => $?PACKAGE.^name ~ '/' ~ $?PACKAGE.^ver);
         }
@@ -540,9 +540,9 @@ class JSON::Infer:ver<0.0.15>:auth<github:jonathanstowe> {
     }
 
 
-    has $.headers is rw;
+    has HTTP::Header $.headers is rw;
 
-    method headers() is rw {
+    method headers( --> HTTP::Header ) is rw {
 
         if not $!headers.defined {
             $!headers = HTTP::Header.new();
@@ -555,7 +555,7 @@ class JSON::Infer:ver<0.0.15>:auth<github:jonathanstowe> {
 
     has Str $.content-type  is rw =  "application/json";
 
-    method decode-json(Str $content) returns Any {
+    method decode-json(Str $content --> Any ) {
         from-json($content);
     }
 
