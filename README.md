@@ -57,9 +57,7 @@ Other install mechanisms may be become available in the future.
 ## Support
 
 
-Suggestions/patches are welcomed via github at
-
-https://github.com/jonathanstowe/JSON-Infer/issues
+Suggestions/patches are welcomed via github at https://github.com/jonathanstowe/JSON-Infer/issues
 
 ## Licence
 
@@ -67,4 +65,4 @@ This is free software.
 
 Please see the LICENCE file in the distribution for details.
 
-© Jonathan Stowe 2015, 2016, 2017
+© Jonathan Stowe 2015, 2016, 2017, 2019
