@@ -466,7 +466,7 @@ class JSON::Infer:ver<0.0.15>:auth<github:jonathanstowe> {
         has Str $.child-class-name is rw;
 
         method child-class-name( --> Str ) is rw { 
-            if not $!child-class-name.defined {
+            $!child-class-name //= do {
                 my Str $name = $!name;
                 $name ~~ s:g/_(.)/{ $0.uc }/;
                 if self.is-array {
@@ -474,7 +474,6 @@ class JSON::Infer:ver<0.0.15>:auth<github:jonathanstowe> {
                 }
                 $!child-class-name =  $name.tc;
             }
-            $!child-class-name;
         }
 
         multi method make-attribute(Int $level = 0 --> Str ) {
@@ -533,23 +532,19 @@ class JSON::Infer:ver<0.0.15>:auth<github:jonathanstowe> {
     }
 
     method ua( --> HTTP::UserAgent ) is rw {
-        if not $!ua.defined {
-            $!ua = HTTP::UserAgent.new( default-headers   => $.headers, useragent => $?PACKAGE.^name ~ '/' ~ $?PACKAGE.^ver);
-        }
-        $!ua;
+        $!ua //=  HTTP::UserAgent.new( default-headers   => $.headers, useragent => $?PACKAGE.^name ~ '/' ~ $?PACKAGE.^ver);
     }
 
 
     has HTTP::Header $.headers is rw;
 
     method headers( --> HTTP::Header ) is rw {
-
-        if not $!headers.defined {
-            $!headers = HTTP::Header.new();
-            $!headers.field('Content-Type'  => $!content-type);
-            $!headers.field('Accept'  => $!content-type);
+        $!headers //= do {
+            my $headers = HTTP::Header.new();
+            $headers.field('Content-Type'  => $!content-type);
+            $headers.field('Accept'  => $!content-type);
+            $headers;
         }
-        $!headers;
     }
 
 
