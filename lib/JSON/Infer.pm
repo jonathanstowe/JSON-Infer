@@ -232,7 +232,7 @@ This returns a suitable string representation of the attribute for Perl.
 use JSON::Fast;
 use HTTP::UserAgent;
 
-class JSON::Infer:ver<0.0.16>:auth<github:jonathanstowe>:api<1.0> {
+class JSON::Infer:ver<0.0.17>:auth<github:jonathanstowe>:api<1.0> {
 
 
     role Classes        { ... }
