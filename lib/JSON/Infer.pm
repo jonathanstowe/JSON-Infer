@@ -4,7 +4,7 @@ use v6;
 
 =head1 NAME
 
-JSON::Infer - Infer Moose Classes from JSON objects
+JSON::Infer - Infer Raku Classes from JSON objects
 
 =head1 SYNOPSIS
 
@@ -14,7 +14,7 @@ JSON::Infer - Infer Moose Classes from JSON objects
 # Use the script to do it simply:
 # Create the modules in the directory "foo"
 
-p6-json-infer --uri=http://api.mixcloud.com/spartacus/party-time/ --out-dir=foo --class-name=Mixcloud::Show
+raku-json-infer --uri=http://api.mixcloud.com/spartacus/party-time/ --out-dir=foo --class-name=Mixcloud::Show
 
 # Or do it in your own code:
 
@@ -36,7 +36,7 @@ have a machine readable specification that can be turned into code so
 developers who want to consume these services usually have to make the
 client definition themselves.
 
-This module aims to provide a way to generate Perl 6 classes that can represent
+This module aims to provide a way to generate Raku classes that can represent
 the data from a JSON source.  The structure and the types of the data is
 inferred from a single data item so the accuracy may depend on the
 consistency of the data.
@@ -73,11 +73,11 @@ default is C<My::JSON> will be used.
 =head4 kebab
 
 If this is provided then the names of the attributes will be turned into the
-more popular Perl 6 style with underscores replaced with hyphens.
+more popular Raku style with underscores replaced with hyphens.
 
 =head3 ua
 
-The L<HTTP::UserAgent> that will be used.
+The L<HTTP::UserAgent> object that will be used.
 
 =head3 headers
 
@@ -188,16 +188,16 @@ L<JSON::Infer::Class> object.
 
 The name of the attribute as found in the JSON data.
 
-=head3 perl-name
+=head3 raku-name
 
-The rules for what a valid Perl identifier can be are more restrictive
+The rules for what a valid Raku identifier can be are more restrictive
 than those for JSON attribute names (which can be nearly any string,) this
 returns a sanitised version of the JSON name to be used when generating
 Perl code.
 
 =head3 has-alternate-name
 
-This is a L<Bool> to indicate whether C<name> and C<perl-name> differ.
+This is a L<Bool> to indicate whether C<name> and C<raku-name> differ.
 This is used internally when generating a string repreesentation of the
 attribute to determine whether the C<json-name> trait is required.
 
@@ -225,14 +225,14 @@ This returns the sigil that should be used for the attribute (e.g '$', '@')
 
 =head3 make-attribute
 
-This returns a suitable string representation of the attribute for Perl.
+This returns a suitable string representation of the attribute for Raku.
 
 =end pod
 
 use JSON::Fast;
 use HTTP::UserAgent;
 
-class JSON::Infer:ver<0.0.17>:auth<github:jonathanstowe>:api<1.0> {
+class JSON::Infer:ver<0.0.18>:auth<github:jonathanstowe>:api<1.0> {
 
 
     role Classes        { ... }
@@ -425,7 +425,7 @@ class JSON::Infer:ver<0.0.17>:auth<github:jonathanstowe>:api<1.0> {
 
 
         has Str $.name is rw;
-        has Str $.perl-name is rw;
+        has Str $.raku-name is rw;
 
         has Bool $.is-array     = False;
         has Bool $.inner-class  = False;
@@ -445,8 +445,8 @@ class JSON::Infer:ver<0.0.17>:auth<github:jonathanstowe>:api<1.0> {
             }
         }
 
-        method perl-name( --> Str ) is rw {
-            $!perl-name //= do {
+        method raku-name( --> Str ) is rw {
+            $!raku-name //= do {
                 my $name = $!name;
                 if $name !~~ /^<.ident>$/ {
                     my $prefix = $!class.split('::')[*-1].lc;
@@ -457,7 +457,7 @@ class JSON::Infer:ver<0.0.17>:auth<github:jonathanstowe>:api<1.0> {
         }
 
         method has-alternate-name( --> Bool ) {
-            self.perl-name ne $!name;
+            self.raku-name ne $!name;
         }
 
         has Str $.type-constraint is rw;
@@ -479,7 +479,7 @@ class JSON::Infer:ver<0.0.17>:auth<github:jonathanstowe>:api<1.0> {
 
         multi method make-attribute(Int $level = 0 --> Str ) {
             my $indent = "    " x $level;
-            my Str $attr-str = $indent ~ "has { self.type-constraint } { self.sigil}.{ self.perl-name }";
+            my Str $attr-str = $indent ~ "has { self.type-constraint } { self.sigil}.{ self.raku-name }";
             if self.has-alternate-name {
                 $attr-str ~= " is json-name('{ self.name }')";
 

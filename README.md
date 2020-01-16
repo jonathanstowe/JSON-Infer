@@ -1,6 +1,6 @@
 # JSON::Infer
 
-Create Perl6 classes to represent JSON data by some dodgy inference.
+Create Raku classes to represent JSON data by some dodgy inference.
 
 ## Synopsis
 
@@ -9,7 +9,7 @@ Use the script to do it simply:
 ```
 # Create the module in the directory "foo"
 
-p6-json-infer --uri=http://api.mixcloud.com/spartacus/party-time/ --out-dir=foo --class-name=Mixcloud::Show
+raku-json-infer --uri=http://api.mixcloud.com/spartacus/party-time/ --out-dir=foo --class-name=Mixcloud::Show
 
 ```
 
@@ -34,14 +34,14 @@ have a machine readable specification that can be turned into code so
 developers who want to consume these services usually have to make the
 client definition themselves.
 
-This module aims to provide a way to generate Perl 6 classes that can represent
+This module aims to provide a way to generate Raku classes that can represent
 the data from a JSON source.  The structure and the types of the data is
 inferred from a single data item so the accuracy may depend on the
 consistency of the data.
 
 ## Installation
 
-Assuming you have a working Perl 6 installation you should be able to
+Assuming you have a working Rakudo installation you should be able to
 install this with *zef* :
 
     # From the source directory
@@ -65,4 +65,4 @@ This is free software.
 
 Please see the LICENCE file in the distribution for details.
 
-© Jonathan Stowe 2015, 2016, 2017, 2019
+© Jonathan Stowe 2015, 2016, 2017, 2019, 2020

@@ -101,7 +101,7 @@ for @tests -> $test {
 
     isa-ok($object, JSON::Infer::Attribute);
     is( $object.name, $test<attr_name>, "got the right name" );
-    is( $object.perl-name, $test<attr_name>, "got the right perl-name too" );
+    is( $object.raku-name, $test<attr_name>, "got the right raku-name too" );
     is($object.is-array, $test<is_array>, "now it's multiplicity right");
     is($object.sigil, $test<is_array> ?? '@' !! '$', "and the right sigil");
     is( $object.type-constraint, $test<type_constraint>, "got the right type constraint" );
@@ -109,7 +109,7 @@ for @tests -> $test {
 
     subtest {
         ok(my $object = JSON::Infer::Attribute.new-from-value( $test<attr_name>, $test<value>, $test<class>, :kebab), "new-from-value with kebab" );
-        is( $object.perl-name, $test<attr_name>.subst(/_/,'-', :g), "got the kebabed perl-name too" );
+        is( $object.raku-name, $test<attr_name>.subst(/_/,'-', :g), "got the kebabed raku-name too" );
 
    }, "with kebab";
 }
