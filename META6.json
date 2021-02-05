@@ -1,12 +1,12 @@
 {
   "name": "JSON::Infer",
-  "version": "0.0.18",
+  "version": "0.1.0",
   "auth": "github:jonathanstowe",
   "api": "1.0",
   "description": "Infer Raku Classes from JSON input",
   "source-url": "https://github.com/jonathanstowe/JSON-Infer.git",
   "support": {
-    "irc": "irc:// irc.freenode.net/#perl6",
+    "irc": "irc:// irc.freenode.net/#raku",
     "email": "jns+git@gellyfish.co.uk",
     "source": "https://github.com/jonathanstowe/JSON-Infer.git",
     "bugtracker": "https://github.com/jonathanstowe/JSON-Infer/issues"

@@ -2,6 +2,8 @@
 
 Create Raku classes to represent JSON data by some dodgy inference.
 
+![Build Status](https://github.com/jonathanstowe/JSON-Infer/workflows/CI/badge.svg)
+
 ## Synopsis
 
 Use the script to do it simply:
@@ -41,8 +43,7 @@ consistency of the data.
 
 ## Installation
 
-Assuming you have a working Rakudo installation you should be able to
-install this with *zef* :
+Assuming you have a working Rakudo installation you should be able to install this with *zef* :
 
     # From the source directory
    
@@ -63,6 +64,6 @@ Suggestions/patches are welcomed via github at https://github.com/jonathanstowe/
 
 This is free software.
 
-Please see the LICENCE file in the distribution for details.
+Please see the [LICENCE](LICENCE) file in the distribution for details.
 
-© Jonathan Stowe 2015, 2016, 2017, 2019, 2020
+© Jonathan Stowe 2015, 2016, 2017, 2019, 2020, 2021

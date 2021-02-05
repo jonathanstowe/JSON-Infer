@@ -519,7 +519,6 @@ class JSON::Infer:ver<0.0.18>:auth<github:jonathanstowe>:api<1.0> {
     }
 
     multi method infer(Str:D :$json!, Str :$class-name = 'My::JSON', Bool :$kebab = False --> Class ) {
-        say "KEBAB: $kebab";
         my $content = self.decode-json($json);
         my $ret = Class.new-from-data(:$class-name, :$content, :$kebab);
         $ret.top-level = True;
@@ -557,4 +556,4 @@ class JSON::Infer:ver<0.0.18>:auth<github:jonathanstowe>:api<1.0> {
     }
 
 }
-# vim: expandtab shiftwidth=4 ft=perl6
+# vim: expandtab shiftwidth=4 ft=raku
