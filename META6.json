@@ -1,44 +1,43 @@
 {
-  "name": "JSON::Infer",
-  "version": "0.1.0",
-  "auth": "github:jonathanstowe",
-  "api": "1.0",
-  "description": "Infer Raku Classes from JSON input",
+  "test-depends": [
+    "JSON::Fast",
+    "Test"
+  ],
   "source-url": "https://github.com/jonathanstowe/JSON-Infer.git",
-  "support": {
-    "irc": "irc:// irc.freenode.net/#raku",
-    "email": "jns+git@gellyfish.co.uk",
-    "source": "https://github.com/jonathanstowe/JSON-Infer.git",
-    "bugtracker": "https://github.com/jonathanstowe/JSON-Infer/issues"
-  },
-  "perl": "6.*",
-  "raku": "6.*",
-  "resources": [
+  "tags": [
+    "object",
+    "serialisation",
+    "JSON"
   ],
-  "build-depends": [
-  ],
-  "author": "Jonathan Stowe <jns+git@gellyfish.co.uk>",
+  "meta-version": "1",
   "depends": [
     "JSON::Fast",
     "HTTP::UserAgent",
     "JSON::Class",
     "JSON::Name"
   ],
-  "tags": [
-    "object",
-    "serialisation",
-    "JSON"
-  ],
-  "license": "Artistic-2.0",
-  "test-depends": [
-    "JSON::Fast",
-    "Test"
-  ],
-  "provides": {
-    "JSON::Infer": "lib/JSON/Infer.pm"
-  },
+  "raku": "6.*",
+  "description": "Infer Raku Classes from JSON input",
+  "api": "1.0",
+  "author": "Jonathan Stowe <jns+git@gellyfish.co.uk>",
+  "auth": "zef:jonathanstowe",
   "authors": [
     "Jonathan Stowe <jns+git@gellyfish.co.uk>"
   ],
-  "meta-version": "1"
+  "build-depends": [
+  ],
+  "name": "JSON::Infer",
+  "support": {
+    "source": "https://github.com/jonathanstowe/JSON-Infer.git",
+    "irc": "irc:// irc.freenode.net/#raku",
+    "email": "jns+git@gellyfish.co.uk",
+    "bugtracker": "https://github.com/jonathanstowe/JSON-Infer/issues"
+  },
+  "version": "0.1.1",
+  "resources": [
+  ],
+  "license": "Artistic-2.0",
+  "provides": {
+    "JSON::Infer": "lib/JSON/Infer.pm"
+  }
 }

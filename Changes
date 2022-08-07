@@ -1,3 +1,5 @@
+v0.1.1	Sun  7 Aug 09:48:21 BST 2022
+	* Upload to zef repository
 v0.1.0		Fri  5 Feb 17:20:42 GMT 2021
 	* Had left some debug code in
 	* Move to GH actions
@@ -36,3 +38,4 @@ v0.0.5		Fri Jan 29 09:36:00 2016 +0000
 	* Don't use fully qualified names in the inner classes Don't duplicate inner classes
 		 
 	* use JSON::Tiny as all the other dependencies use it
+
