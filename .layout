@@ -62,7 +62,7 @@
           "purpose": null,
           "children": [
             {
-              "name": "Infer.pm",
+              "name": "Infer.rakumod",
               "type": "file"
             }
           ],
